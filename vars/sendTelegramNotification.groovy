@@ -11,8 +11,8 @@ def call() {
                     }
                 """
     
-    httpRequest url: "${telegramApi}/${telegramBotToken}/sendMessage", 
-                        httpMode: 'POST',
-                        contentType: 'APPLICATION_JSON',
-                        requestBody: body
+    httpRequest url: "$telegramApi/$telegramBotToken/sendMessage", 
+                httpMode: 'POST',
+                contentType: 'APPLICATION_JSON',
+                requestBody: body
 }
