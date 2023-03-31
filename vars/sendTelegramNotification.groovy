@@ -30,7 +30,7 @@ def call() {
 
         def body = """
                         {
-                          "chat_id": "${telegramChannel}",
+                          "chat_id": "$telegramChannel",
                           "text": "The job *${JOB_NAME}* Nr. *${BUILD_NUMBER}* is finished. \n\n *branch: ${env.BRANCH_NAME}* \n\n *result: ${currentBuild.result}* \n\n [Job Url](${BUILD_URL})",
                           "parse_mode": "Markdown"
                         }
