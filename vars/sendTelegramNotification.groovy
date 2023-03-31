@@ -10,6 +10,7 @@ def call() {
                       "parse_mode": "Markdown"
                     }
                 """
+    echo 'Sending notification...'
     
     httpRequest url: "https://api.telegram.org/${telegramBotToken}/sendMessage", 
                 httpMode: 'POST',
