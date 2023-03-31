@@ -20,7 +20,7 @@ def call() {
         //             contentType: 'APPLICATION_JSON',
         //             requestBody: body
 
-        def url = "https://api.telegram.org/bot${telegramBotToken}/sendMessage"
+        def url = "https://api.telegram.org/${telegramBotToken}/sendMessage"
         
         // def body = {
         //   chat_id: "${telegramChannel}",
