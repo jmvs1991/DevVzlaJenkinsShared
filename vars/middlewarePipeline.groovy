@@ -6,7 +6,7 @@ def call(String project, String artifact){
           TELEGRAM_CHANNEL = credentials('telegram_channel_id')
           PATH_PRJ = "./${project}/${project}.csproj"
           PATH_PUB = "./${project}/bin/Release/net6.0/publish"
-          ARTIFACT = "artifact_${env.BRANCH_NAME}_${BUILD_NUMBER}.zip"
+          ARTIFACT = "${artifact}_${env.BRANCH_NAME}_${BUILD_NUMBER}.zip"
       }
       stages{
           stage('Restore') {
