@@ -36,7 +36,7 @@ def call() {
                         }
                     """
 
-        def response = sh script: "curl -X POST -H 'Content-Type: application/json' -d '${body.encodeJson()}' ${url}", returnStdout: true
+        def response = sh script: "curl -X POST -H 'Content-Type: application/json' -d '${body}' ${url}", returnStdout: true
 
         if (response.contains('"ok":true')) {
             echo "Notification sent successfully"
