@@ -7,7 +7,7 @@ def call(String telegramBotToken, String telegramChannelId) {
     def body = """
                     {
                       "chat_id": $telegramChannelId,
-                      "text": "The job *${JOB_NAME}* Nr. *${BUILD_NUMBER}* is finished. \n\n *Started by: ${env.CHANGE_AUTHOR}* \n\n *Branch: ${env.BRANCH_NAME}* \n\n *Result: ${currentBuild.result}* \n\n [Job Url](${BUILD_URL})",
+                      "text": "The job *${JOB_NAME}* Nr. *${BUILD_NUMBER}* is finished. \n\n *Started by: ${env.GITLAB_USER_NAME}* \n\n *Branch: ${env.BRANCH_NAME}* \n\n *Result: ${currentBuild.result}* \n\n [Job Url](${BUILD_URL})",
                       "parse_mode": "Markdown"
                     }
                 """
