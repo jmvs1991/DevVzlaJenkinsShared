@@ -24,7 +24,7 @@ def call(String project, String artifactName, boolean withTest){
                       changeset "${project}Cache/**/*"
                       changeset "${project}Services/**/*"
                       changeset "${project}Test/**/*"
-                      withTest
+                      expression { withTest == true }
                   }
               }
               steps {
