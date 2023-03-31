@@ -2,6 +2,8 @@ def call(String project, String artifact){
   pipeline{
       agent any
       environment{
+          TELEGRAM_BOT_TOKEN = credentials('telegram_bot_token')
+          TELEGRAM_CHANNEL = credentials('telegram_channel_id')
           PATH_PRJ = "./${project}/${project}.csproj"
           PATH_PUB = "./${project}/bin/Release/net6.0/publish"
           ARTIFACT = "artifact_${env.BRANCH_NAME}_${BUILD_NUMBER}.zip"
