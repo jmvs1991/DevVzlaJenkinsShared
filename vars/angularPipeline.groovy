@@ -21,12 +21,6 @@ def call(){
                   sh 'npm run lint'
               }
           }
-          stage('Build') {
-              steps {
-                  echo "Building"
-                  sh 'ng build'
-              }
-          }
       }
       post {
         always {
