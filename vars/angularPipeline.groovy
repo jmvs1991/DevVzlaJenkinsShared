@@ -24,7 +24,7 @@ def call(){
           stage('Build') {
               steps {
                   echo "Building"
-                  sh 'ng build --prod'
+                  sh 'ng build'
               }
           }
       }
