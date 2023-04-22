@@ -4,7 +4,7 @@ def call(String folder, String artifactName){
       environment{
           TELEGRAM_BOT_TOKEN = credentials('telegram_bot_token')
           TELEGRAM_CHANNEL = credentials('telegram_channel_id')
-          PATH_PUB = "./dist/${project}"
+          PATH_PUB = "./dist/${folder}"
           ARTIFACT = "${artifactName}_${env.BRANCH_NAME}_${BUILD_NUMBER}.zip"
       }
       tools {
