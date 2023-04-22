@@ -21,6 +21,12 @@ def call(){
                   sh 'npm run lint'
               }
           }
+          stage('Install'){
+              steps {
+                  echo "Installing"
+                  sh 'npm run build:develop'
+              }
+          }
       }
       post {
         always {
