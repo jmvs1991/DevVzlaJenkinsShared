@@ -21,9 +21,9 @@ def call(){
                   sh 'npm run lint'
               }
           }
-          stage('Install'){
+          stage('Build'){
               steps {
-                  echo "Installing"
+                  echo "Building"
                   sh 'npm run build:develop'
               }
           }
