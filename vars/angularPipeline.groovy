@@ -24,6 +24,13 @@ def call(String folder, String artifactName){
               }
           }
           stage('Build'){
+              when{
+                  anyOf{
+                      branch 'develop'
+                      branch 'stage'
+                      branch 'main'
+                  }
+              }
               steps {
                   echo "Building"
                   sh "npm run build:${env.BRANCH_NAME}"
