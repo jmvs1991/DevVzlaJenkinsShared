@@ -26,7 +26,7 @@ def call(String folder, String artifactName){
           stage('Build'){
               steps {
                   echo "Building"
-                  sh 'npm run build:develop'
+                  sh "npm run build:${env.BRANCH_NAME}"
                   zip zipFile: "${ARTIFACT}", overwrite: true, archive: false, dir: "${PATH_PUB}"
                   archiveArtifacts artifacts: "${ARTIFACT}", fingerprint: true
               }
