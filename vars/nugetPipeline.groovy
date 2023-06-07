@@ -17,11 +17,6 @@ def call(String project){
           stage('Build'){
               when{
                   anyOf{
-                      branch 'develop'
-                      branch 'stage'
-                      branch 'main'
-                  }
-                  anyOf{
                       changeset "${project}/**/*"
                   }
               }
