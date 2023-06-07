@@ -10,7 +10,9 @@ def call(String project, String folder){
           AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
           AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key-id')
           AWS_DEFAULT_REGION = credentials('aws-default-region')
+          AWS_SOURCE = credentials('aws-source')
           PATH_PRJ = "./${folder}/${project}.csproj"
+          PATH_PKG: "./${folder}/bin/Release/*.nupkg"
       }
       stages {
           stage('Restore') {
@@ -42,6 +44,17 @@ def call(String project, String folder){
                   sh "aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}"
                   sh "aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY}"
                   sh "aws codeartifact login --tool dotnet --repository ${AWS_CODE_ARTIFACT_REPOSITORY} --domain ${AWS_CODE_ARTIFACT_DOMAIN} --domain-owner ${AWS_CODE_ARTIFACT_DOMAIN_OWNER} --region ${AWS_DEFAULT_REGION}"
+              }
+          }
+          stage('Publish'){
+              // when{
+              //     anyOf{
+              //         changeset "${folder}/**/*"
+              //     }
+              // }
+              steps {
+                  echo 'Pushing pkg..'
+                  sh "dotnet nuget push ${PATH_PKG} --source ${AWS_SOURCE}"
               }
           }
       }
