@@ -4,6 +4,10 @@ def call(String project){
       environment{
           TELEGRAM_BOT_TOKEN = credentials('telegram_bot_token')
           TELEGRAM_CHANNEL = credentials('telegram_channel_id')
+          AWS_CODE_ARTIFACT_DOMAIN = credentials('aws-code-artifact-domain')
+          AWS_CODE_ARTIFACT_DOMAIN_OWNER = credentials('aws-code-artifact-domain-owner')
+          AWS_CODE_ARTIFACT_REPOSITORY = credentials('aws-code-artifact-repository')
+          AWS_DEFAULT_REGION = credentials('aws-default-region')
           PATH_PRJ = "./${project}/${project}.csproj"
       }
       stages {
@@ -15,14 +19,25 @@ def call(String project){
               }
           }
           stage('Build'){
-              when{
-                  anyOf{
-                      changeset "${project}/**/*"
-                  }
-              }
+              // when{
+              //     anyOf{
+              //         changeset "${project}/**/*"
+              //     }
+              // }
               steps {
                   echo 'Build..'
                   sh "dotnet build -c Release ${PATH_PRJ}"
+              }
+          }
+          stage('Login'){
+              // when{
+              //     anyOf{
+              //         changeset "${project}/**/*"
+              //     }
+              // }
+              steps {
+                  echo 'Build..'
+                  sh "aws codeartifact login --tool dotnet --repository ${AWS_CODE_ARTIFACT_REPOSITORY} --domain ${AWS_CODE_ARTIFACT_DOMAIN} --domain-owner ${AWS_CODE_ARTIFACT_DOMAIN_OWNER} --region ${AWS_DEFAULT_REGION}"
               }
           }
       }
