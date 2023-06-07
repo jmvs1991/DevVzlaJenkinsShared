@@ -1,4 +1,4 @@
-def call(String project){
+def call(String project, String folder){
   pipeline {
       agent any
       environment{
@@ -8,7 +8,7 @@ def call(String project){
           AWS_CODE_ARTIFACT_DOMAIN_OWNER = credentials('aws-code-artifact-domain-owner')
           AWS_CODE_ARTIFACT_REPOSITORY = credentials('aws-code-artifact-repository')
           AWS_DEFAULT_REGION = credentials('aws-default-region')
-          PATH_PRJ = "./${project}/${project}.csproj"
+          PATH_PRJ = "./${folder}/${project}.csproj"
       }
       stages {
           stage('Restore') {
@@ -21,7 +21,7 @@ def call(String project){
           stage('Build'){
               // when{
               //     anyOf{
-              //         changeset "${project}/**/*"
+              //         changeset "${folder}/**/*"
               //     }
               // }
               steps {
@@ -32,7 +32,7 @@ def call(String project){
           stage('Login'){
               // when{
               //     anyOf{
-              //         changeset "${project}/**/*"
+              //         changeset "${folder}/**/*"
               //     }
               // }
               steps {
