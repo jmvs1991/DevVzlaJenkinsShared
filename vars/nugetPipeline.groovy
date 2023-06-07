@@ -23,22 +23,25 @@ def call(String project, String folder){
               }
           }
           stage('Build'){
-              // when{
-              //     anyOf{
-              //         changeset "${folder}/**/*"
-              //     }
-              // }
+              when{
+                  anyOf{
+                      changeset "${folder}/**/*"
+                  }
+              }
               steps {
                   echo 'Build..'
                   sh "dotnet build -c Release ${PATH_PRJ}"
               }
           }
           stage('Login'){
-              // when{
-              //     anyOf{
-              //         changeset "${folder}/**/*"
-              //     }
-              // }
+              when{
+                  anyOf{
+                      branch 'main'
+                  }
+                  anyOf{
+                      changeset "${folder}/**/*"
+                  }
+              }
               steps {
                   echo 'Build..'
                   sh "aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}"
@@ -47,11 +50,14 @@ def call(String project, String folder){
               }
           }
           stage('Publish'){
-              // when{
-              //     anyOf{
-              //         changeset "${folder}/**/*"
-              //     }
-              // }
+              when{
+                  anyOf{
+                      branch 'main'
+                  }
+                  anyOf{
+                      changeset "${folder}/**/*"
+                  }
+              }
               steps {
                   echo 'Pushing pkg..'
                   sh "dotnet nuget push ${PATH_PKG} --source ${AWS_SOURCE}"
