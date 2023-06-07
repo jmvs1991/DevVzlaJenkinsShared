@@ -7,6 +7,8 @@ def call(String project, String folder){
           AWS_CODE_ARTIFACT_DOMAIN = credentials('aws-code-artifact-domain')
           AWS_CODE_ARTIFACT_DOMAIN_OWNER = credentials('aws-code-artifact-domain-owner')
           AWS_CODE_ARTIFACT_REPOSITORY = credentials('aws-code-artifact-repository')
+          AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
+          AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key-id')
           AWS_DEFAULT_REGION = credentials('aws-default-region')
           PATH_PRJ = "./${folder}/${project}.csproj"
       }
@@ -15,7 +17,7 @@ def call(String project, String folder){
               steps {
                   echo 'Restore Project'
                   sh 'dotnet clean'
-                  sh 'dotnet restore --no-cache'
+                  sh "dotnet restore ${PATH_PRJ} --no-cache"
               }
           }
           stage('Build'){
@@ -37,6 +39,8 @@ def call(String project, String folder){
               // }
               steps {
                   echo 'Build..'
+                  sh "aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}"
+                  sh "aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY}"
                   sh "aws codeartifact login --tool dotnet --repository ${AWS_CODE_ARTIFACT_REPOSITORY} --domain ${AWS_CODE_ARTIFACT_DOMAIN} --domain-owner ${AWS_CODE_ARTIFACT_DOMAIN_OWNER} --region ${AWS_DEFAULT_REGION}"
               }
           }
