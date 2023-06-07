@@ -12,7 +12,7 @@ def call(String project, String folder){
           AWS_DEFAULT_REGION = credentials('aws-default-region')
           AWS_SOURCE = credentials('aws-source')
           PATH_PRJ = "./${folder}/${project}.csproj"
-          PATH_PKG: "./${folder}/bin/Release/*.nupkg"
+          PATH_PKG = "./${folder}/bin/Release/*.nupkg"
       }
       stages {
           stage('Restore') {
