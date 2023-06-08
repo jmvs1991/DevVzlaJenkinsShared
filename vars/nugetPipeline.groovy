@@ -19,6 +19,7 @@ def call(String project, String folder){
               when{
                   anyOf{
                       changeset "${folder}/**/*"
+                      changeset "${PATH_PRJ}"
                   }
               }
               steps {
@@ -31,6 +32,7 @@ def call(String project, String folder){
               when{
                   anyOf{
                       changeset "${folder}/**/*"
+                      changeset "${PATH_PRJ}"
                   }
               }
               steps {
@@ -45,6 +47,7 @@ def call(String project, String folder){
                   }
                   anyOf{
                       changeset "${folder}/**/*"
+                      changeset "${PATH_PRJ}"
                   }
               }
               steps {
@@ -61,6 +64,7 @@ def call(String project, String folder){
                   }
                   anyOf{
                       changeset "${folder}/**/*"
+                      changeset "${PATH_PRJ}"
                   }
               }
               steps {
