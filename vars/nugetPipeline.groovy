@@ -29,11 +29,11 @@ def call(String project, String folder){
             }
         }    
         stage('Restore') {
-            // when{
-            //     anyOf{
-            //         changeset "${folder}/**/*"
-            //     }
-            // }
+            when{
+                anyOf{
+                    changeset "${folder}/**/*"
+                }
+            }
             steps {
                 echo 'Restore Project'
                 sh 'dotnet clean'
