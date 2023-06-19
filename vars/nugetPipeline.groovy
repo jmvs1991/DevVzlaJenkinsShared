@@ -20,7 +20,7 @@ def call(String project, String folder, String jenkinsfile){
                 }
             }
             steps {
-                aws(AWS_CODE_ARTIFACT_DOMAIN, AWS_CODE_ARTIFACT_DOMAIN_OWNER, AWS_DEFAULT_REGION)
+                awsLogin(AWS_CODE_ARTIFACT_DOMAIN, AWS_CODE_ARTIFACT_DOMAIN_OWNER, AWS_DEFAULT_REGION)
             }
         }    
         stage('Restore') {
