@@ -20,7 +20,17 @@ def call(String project, String folder, String jenkinsfile){
                 }
             }
             steps {
+                updateGitlabCommitStatus name: 'Login', state: 'pending'
                 awsLogin(AWS_CODE_ARTIFACT_DOMAIN, AWS_CODE_ARTIFACT_DOMAIN_OWNER, AWS_DEFAULT_REGION)
+                
+            }
+            post { 
+                unsuccessful { 
+                    updateGitlabCommitStatus name: 'Login', state: 'unsuccessful'
+                }
+                success { 
+                    updateGitlabCommitStatus name: 'Login', state: 'success'
+                }
             }
         }    
         stage('Restore') {
@@ -31,9 +41,19 @@ def call(String project, String folder, String jenkinsfile){
                 }
             }
             steps {
+                updateGitlabCommitStatus name: 'Login', state: 'pending'
                 echo 'Restore Project'
                 sh 'dotnet clean'
                 sh "dotnet restore ${PATH_PRJ} --no-cache"
+                updateGitlabCommitStatus name: 'Login', state: 'success'
+            }
+            post { 
+                unsuccessful { 
+                    updateGitlabCommitStatus name: 'Restore', state: 'unsuccessful'
+                }
+                success { 
+                    updateGitlabCommitStatus name: 'Restore', state: 'success'
+                }
             }
         }
         stage('Build'){
@@ -46,6 +66,14 @@ def call(String project, String folder, String jenkinsfile){
             steps {
                 echo 'Build..'
                 sh "dotnet build -c Release ${PATH_PRJ}"
+            }
+            post { 
+                unsuccessful { 
+                    updateGitlabCommitStatus name: 'Build', state: 'unsuccessful'
+                }
+                success { 
+                    updateGitlabCommitStatus name: 'Build', state: 'success'
+                }
             }
         }
         stage('Publish'){
@@ -60,6 +88,14 @@ def call(String project, String folder, String jenkinsfile){
             steps {
                 echo 'Pushing pkg..'
                 sh "dotnet nuget push ${PATH_PKG} --source ${AWS_SOURCE}"
+            }
+            post { 
+                unsuccessful { 
+                    updateGitlabCommitStatus name: 'Publish', state: 'unsuccessful'
+                }
+                success { 
+                    updateGitlabCommitStatus name: 'Publish', state: 'success'
+                }
             }
         }  
       }
