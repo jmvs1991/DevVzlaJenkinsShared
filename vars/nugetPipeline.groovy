@@ -1,4 +1,4 @@
-def call(String project, String folder){
+def call(String project, String folder, String jenkinsfile){
   pipeline {
       agent any
       environment{
@@ -6,19 +6,28 @@ def call(String project, String folder){
           TELEGRAM_CHANNEL = credentials('telegram_channel_id')
           AWS_CODE_ARTIFACT_DOMAIN = credentials('aws-code-artifact-domain')
           AWS_CODE_ARTIFACT_DOMAIN_OWNER = credentials('aws-code-artifact-domain-owner')
-          AWS_CODE_ARTIFACT_REPOSITORY = credentials('aws-code-artifact-repository')
-          AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
-          AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key-id')
           AWS_DEFAULT_REGION = credentials('aws-default-region')
           AWS_SOURCE = credentials('aws-source')
           PATH_PRJ = "./${folder}/${project}.csproj"
           PATH_PKG = "./${folder}/bin/Release/*.nupkg"
       }
-      stages {    
+      stages {
+        stage('Login'){
+            when{
+                anyOf{
+                    changeset "${folder}/**/*"
+                    changeset "${jenkinsfile}"
+                }
+            }
+            steps {
+                aws(AWS_CODE_ARTIFACT_DOMAIN, AWS_CODE_ARTIFACT_DOMAIN_OWNER, AWS_DEFAULT_REGION)
+            }
+        }    
         stage('Restore') {
             when{
                 anyOf{
                     changeset "${folder}/**/*"
+                    changeset "${jenkinsfile}"
                 }
             }
             steps {
@@ -31,27 +40,12 @@ def call(String project, String folder){
             when{
                 anyOf{
                     changeset "${folder}/**/*"
+                    changeset "${jenkinsfile}"
                 }
             }
             steps {
                 echo 'Build..'
                 sh "dotnet build -c Release ${PATH_PRJ}"
-            }
-        }
-        stage('Login'){
-            when{
-                anyOf{
-                    branch 'main'
-                }
-                anyOf{
-                    changeset "${folder}/**/*"
-                }
-            }
-            steps {
-                echo 'Login..'
-                sh "aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}"
-                sh "aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY}"
-                sh "aws codeartifact login --tool dotnet --repository ${AWS_CODE_ARTIFACT_REPOSITORY} --domain ${AWS_CODE_ARTIFACT_DOMAIN} --domain-owner ${AWS_CODE_ARTIFACT_DOMAIN_OWNER} --region ${AWS_DEFAULT_REGION}"
             }
         }
         stage('Publish'){
