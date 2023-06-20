@@ -4,6 +4,9 @@ def call(String project, String artifactName, boolean withTest, String jenkinsfi
         environment {
             TELEGRAM_BOT_TOKEN = credentials('telegram_bot_token')
             TELEGRAM_CHANNEL = credentials('telegram_channel_id')
+            AWS_CODE_ARTIFACT_DOMAIN = credentials('aws-code-artifact-domain')
+            AWS_CODE_ARTIFACT_DOMAIN_OWNER = credentials('aws-code-artifact-domain-owner')
+            AWS_DEFAULT_REGION = credentials('aws-default-region')
             PATH_TEST = "./${project}Test/${project}Test.csproj"
             PATH_PRJ = "./${project}/${project}.csproj"
             PATH_PUB = "./${project}/bin/Release/net6.0/publish"
