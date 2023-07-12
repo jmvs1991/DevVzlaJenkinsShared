@@ -64,6 +64,8 @@ def call(String project, String folder, String jenkinsfile, boolean forceSteps =
                     }
                     anyOf {
                         changeset "${folder}/**/*"
+                    }
+                    anyOf{
                         expression {
                             forceSteps == true || forcePublish == true
                         }
