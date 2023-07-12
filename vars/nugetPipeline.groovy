@@ -17,9 +17,9 @@ def call(String project, String folder, String jenkinsfile, boolean forceSteps =
                     anyOf {
                         changeset "${folder}/**/*"
                         changeset "${jenkinsfile}"
-                    }
-                    expression {
-                        forceSteps == true
+                        expression {
+                            forceSteps == true
+                        }
                     }
                 }
                 steps {
@@ -31,9 +31,9 @@ def call(String project, String folder, String jenkinsfile, boolean forceSteps =
                     anyOf {
                         changeset "${folder}/**/*"
                         changeset "${jenkinsfile}"
-                    }
-                    expression {
-                        forceSteps == true
+                        expression {
+                            forceSteps == true
+                        }
                     }
                 }
                 steps {
@@ -47,9 +47,9 @@ def call(String project, String folder, String jenkinsfile, boolean forceSteps =
                     anyOf {
                         changeset "${folder}/**/*"
                         changeset "${jenkinsfile}"
-                    }
-                    expression {
-                        forceSteps == true
+                        expression {
+                            forceSteps == true
+                        }
                     }
                 }
                 steps {
@@ -64,10 +64,9 @@ def call(String project, String folder, String jenkinsfile, boolean forceSteps =
                     }
                     anyOf {
                         changeset "${folder}/**/*"
-                    }
-                    expression {
-                        forceSteps == true
-                        forcePublish == true
+                        expression {
+                            forceSteps == true || forcePublish == true
+                        }
                     }
                 }
                 steps {
