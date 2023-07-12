@@ -67,7 +67,10 @@ def call(String project, String folder, String jenkinsfile, boolean forceSteps =
                     }
                     anyOf{
                         expression {
-                            forceSteps == true || forcePublish == true
+                            forceSteps == true
+                        }
+                        expression {
+                            forcePublish == true
                         }
                     }
                 }
