@@ -60,6 +60,9 @@ def call(String project, String folder, String jenkinsfile, boolean forceSteps =
             stage('Publish') {
                 when {
                     anyOf {
+                        branch 'main'
+                    }
+                    anyOf {
                         changeset "${folder}/**/*"
                         expression {
                             forceSteps == true || forcePublish == true
