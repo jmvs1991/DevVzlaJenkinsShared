@@ -1,4 +1,4 @@
-def call(String project, String folder, String jenkinsfile) {
+def call(String project, String folder, String jenkinsfile, boolean forceSteps = false, boolean forcePublish = false) {
     pipeline {
         agent any
         environment {
@@ -18,6 +18,9 @@ def call(String project, String folder, String jenkinsfile) {
                         changeset "${folder}/**/*"
                         changeset "${jenkinsfile}"
                     }
+                    expression {
+                        forceSteps == true
+                    }
                 }
                 steps {
                     awsLogin(AWS_CODE_ARTIFACT_DOMAIN, AWS_CODE_ARTIFACT_DOMAIN_OWNER, AWS_DEFAULT_REGION)
@@ -28,6 +31,9 @@ def call(String project, String folder, String jenkinsfile) {
                     anyOf {
                         changeset "${folder}/**/*"
                         changeset "${jenkinsfile}"
+                    }
+                    expression {
+                        forceSteps == true
                     }
                 }
                 steps {
@@ -42,6 +48,9 @@ def call(String project, String folder, String jenkinsfile) {
                         changeset "${folder}/**/*"
                         changeset "${jenkinsfile}"
                     }
+                    expression {
+                        forceSteps == true
+                    }
                 }
                 steps {
                     echo 'Build..'
@@ -55,6 +64,10 @@ def call(String project, String folder, String jenkinsfile) {
                     }
                     anyOf {
                         changeset "${folder}/**/*"
+                    }
+                    expression {
+                        forceSteps == true
+                        forcePublish == true
                     }
                 }
                 steps {
