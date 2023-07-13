@@ -1,4 +1,4 @@
-def call(String project, String artifactName, boolean withTest, String jenkinsfile) {
+def call(String project, String artifactName, boolean withTest, String jenkinsfile, boolean forceSteps) {
     pipeline {
         agent any
         environment {
@@ -21,6 +21,9 @@ def call(String project, String artifactName, boolean withTest, String jenkinsfi
                         changeset "${project}Services/**/*"
                         changeset "${project}Test/**/*"
                         changeset "${jenkinsfile}"
+                        expression {
+                            forceSteps == true
+                        }
                     }
                 }
                 steps {
@@ -35,6 +38,9 @@ def call(String project, String artifactName, boolean withTest, String jenkinsfi
                         changeset "${project}Services/**/*"
                         changeset "${project}Test/**/*"
                         changeset "${jenkinsfile}"
+                        expression {
+                            forceSteps == true
+                        }
                     }
                 }
                 steps {
@@ -51,6 +57,9 @@ def call(String project, String artifactName, boolean withTest, String jenkinsfi
                         changeset "${project}Services/**/*"
                         changeset "${project}Test/**/*"
                         changeset "${jenkinsfile}"
+                        expression {
+                            forceSteps == true
+                        }
                     }
                     expression {
                         withTest == true
@@ -73,6 +82,9 @@ def call(String project, String artifactName, boolean withTest, String jenkinsfi
                         changeset "${project}Cache/**/*"
                         changeset "${project}Services/**/*"
                         changeset "${jenkinsfile}"
+                        expression {
+                            forceSteps == true
+                        }
                     }
                 }
                 steps {
