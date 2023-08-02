@@ -78,6 +78,7 @@ def call(String project, String folder, String jenkinsfile, boolean forceSteps =
         post {
             always {
                 sendTelegramNotification(TELEGRAM_BOT_TOKEN, TELEGRAM_CHANNEL)
+                cleanWs()
             }
         }
     }
