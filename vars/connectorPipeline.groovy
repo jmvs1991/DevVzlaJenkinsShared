@@ -14,7 +14,7 @@ def call(String project, String artifact) {
         stages {
             stage('Clean WS') {
                 steps {
-                    cleanWS()
+                    cleanWs()
                 }
             }
             stage('Login') {
