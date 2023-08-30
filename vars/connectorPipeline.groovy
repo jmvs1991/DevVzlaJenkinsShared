@@ -12,11 +12,6 @@ def call(String project, String artifact) {
             ARTIFACT = "${artifact}_${env.BRANCH_NAME}_${BUILD_NUMBER}.zip"
         }
         stages {
-            stage('Clean WS') {
-                steps {
-                    cleanWs()
-                }
-            }
             stage('Login') {
                 steps {
                     awsLogin(AWS_CODE_ARTIFACT_DOMAIN, AWS_CODE_ARTIFACT_DOMAIN_OWNER, AWS_DEFAULT_REGION)
@@ -48,6 +43,7 @@ def call(String project, String artifact) {
         post {
             always {
                 sendTelegramNotification(TELEGRAM_BOT_TOKEN, TELEGRAM_CHANNEL)
+                cleanWs()
             }
         }
     }
