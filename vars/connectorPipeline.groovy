@@ -12,6 +12,11 @@ def call(String project, String artifact) {
             ARTIFACT = "${artifact}_${env.BRANCH_NAME}_${BUILD_NUMBER}.zip"
         }
         stages {
+            stage('Clean WS') {
+                steps {
+                    cleanWS()
+                }
+            }
             stage('Login') {
                 steps {
                     awsLogin(AWS_CODE_ARTIFACT_DOMAIN, AWS_CODE_ARTIFACT_DOMAIN_OWNER, AWS_DEFAULT_REGION)
