@@ -43,6 +43,7 @@ def call(String project, String artifact) {
         post {
             always {
                 sendTelegramNotification(TELEGRAM_BOT_TOKEN, TELEGRAM_CHANNEL)
+                cleanWs()
             }
         }
     }
