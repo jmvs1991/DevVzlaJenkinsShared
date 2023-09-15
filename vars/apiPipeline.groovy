@@ -98,6 +98,7 @@ def call(String project, String artifactName, boolean withTest, String jenkinsfi
         post {
             always {
                 sendTelegramNotification(TELEGRAM_BOT_TOKEN, TELEGRAM_CHANNEL)
+                cleanWs()
             }
         }
     }
