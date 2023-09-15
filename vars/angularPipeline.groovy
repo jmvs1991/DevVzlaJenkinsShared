@@ -42,6 +42,7 @@ def call(String folder, String artifactName){
       post {
         always {
             sendTelegramNotification(TELEGRAM_BOT_TOKEN, TELEGRAM_CHANNEL)
+            cleanWs()
         }
       }
   }
