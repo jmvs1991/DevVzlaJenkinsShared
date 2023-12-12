@@ -12,7 +12,7 @@ def call(String project, String folder, String jenkinsfile, boolean forceSteps =
           stage('Login'){
              when {
                     anyOf {
-                        changeset "${folder}/**/*"
+                        changeset "**/${folder}/**/*"
                         changeset "${jenkinsfile}"
                         expression {
                             forceSteps == true
@@ -27,7 +27,7 @@ def call(String project, String folder, String jenkinsfile, boolean forceSteps =
           stage('Install'){
                 when {
                     anyOf {
-                        changeset "${folder}/**/*"
+                        changeset "**/${folder}/**/*"
                         changeset "${jenkinsfile}"
                         expression {
                             forceSteps == true
@@ -42,7 +42,7 @@ def call(String project, String folder, String jenkinsfile, boolean forceSteps =
           stage('Linter'){
                 when {
                     anyOf {
-                        changeset "${folder}/**/*"
+                        changeset "**/${folder}/**/*"
                         changeset "${jenkinsfile}"
                         expression {
                             forceSteps == true
@@ -57,7 +57,7 @@ def call(String project, String folder, String jenkinsfile, boolean forceSteps =
           stage('Build'){
                 when {
                     anyOf {
-                        changeset "${folder}/**/*"
+                        changeset "**/${folder}/**/*"
                         changeset "${jenkinsfile}"
                         expression {
                             forceSteps == true
@@ -75,7 +75,7 @@ def call(String project, String folder, String jenkinsfile, boolean forceSteps =
                         branch 'main'
                     }
                     anyOf {
-                        changeset "${folder}/**/*"
+                        changeset "**/${folder}/**/*"
                         expression {
                             forceSteps == true || forcePublish == true
                         }
