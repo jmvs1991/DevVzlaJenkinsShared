@@ -51,7 +51,7 @@ def call(String project, String folder, String jenkinsfile, boolean forceSteps =
                 }
               steps {
                   echo 'Build'
-                  sh 'npm run build:${project}'
+                  sh "npm run build:${project}"
               }
           }
           stage('Publish'){
@@ -68,7 +68,7 @@ def call(String project, String folder, String jenkinsfile, boolean forceSteps =
                 }
               steps {
                   echo 'Publishing'
-                  sh 'npm run publish:${project}'
+                  sh "npm run publish:${project}"
               }
           }
       }
