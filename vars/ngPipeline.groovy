@@ -39,6 +39,21 @@ def call(String project, String folder, String jenkinsfile, boolean forceSteps =
                   sh 'npm install --exact'
               }
           }
+          stage('Linter'){
+                when {
+                    anyOf {
+                        changeset "${folder}/**/*"
+                        changeset "${jenkinsfile}"
+                        expression {
+                            forceSteps == true
+                        }
+                    }
+                }
+              steps {
+                  echo 'Runing linter'
+                  sh "npm run lint:${project}"
+              }
+          }
           stage('Build'){
                 when {
                     anyOf {
