@@ -1,4 +1,4 @@
-def call(String project, String artifact) {
+def call(String project, String artifact, boolean forceSteps = false) {
     pipeline {
         agent any
         environment {
@@ -30,6 +30,9 @@ def call(String project, String artifact) {
                         branch 'develop'
                         branch 'stage'
                         branch 'main'
+                        expression {
+                            forceSteps == true
+                        }
                     }
                 }
                 steps {
