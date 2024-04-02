@@ -1,7 +1,7 @@
 def call(String domain, String owner, String region){
     echo 'Login...'
 
-    def repositories = ['BankCore', 'HandlersCore', 'MessageCore', 'NetCore', 'RestClientsCore', 'SettingsCore']
+    def repositories = ['BankCore', 'HandlersCore', 'MessageCore', 'NetCore', 'RestClientsCore', 'SettingsCore', 'Templates']
 
     repositories.each {repo ->
         echo "Login in ${repo} repository"
