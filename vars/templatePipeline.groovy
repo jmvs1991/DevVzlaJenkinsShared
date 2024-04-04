@@ -28,7 +28,7 @@ def call() {
                 }
                 steps {
                     echo 'Pack..'
-                    sh "dotnet pack -c Release ./ --output nupkgs"
+                    sh "dotnet pack -c Release . --output nupkgs"
                 }
             }
             stage('Publish') {
