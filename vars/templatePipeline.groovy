@@ -20,6 +20,18 @@ def call() {
                     awsLogin(AWS_CODE_ARTIFACT_DOMAIN, AWS_CODE_ARTIFACT_DOMAIN_OWNER, AWS_DEFAULT_REGION)
                 }
             }
+            stage('Restore') {
+                when {
+                    anyOf {
+                        branch 'main'
+                    }
+                }
+                steps {
+                    echo 'Restore Project'
+                    sh 'dotnet clean'
+                    sh "dotnet restore . --no-cache"
+                }
+            }
             stage('Pack') {
                 when {
                     anyOf {
