@@ -29,6 +29,7 @@ def call(String project) {
                 }
                 steps {
                     echo 'Pack..'
+                    bat 'dir'
                     sh "dotnet pack -c Release ${PATH_PRJ} --output nupkgs"
                 }
             }
