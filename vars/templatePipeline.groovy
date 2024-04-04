@@ -1,4 +1,4 @@
-def call(String project) {
+def call() {
     pipeline {
         agent any
         environment {
@@ -8,7 +8,6 @@ def call(String project) {
             AWS_CODE_ARTIFACT_DOMAIN_OWNER = credentials('aws-code-artifact-domain-owner')
             AWS_DEFAULT_REGION = credentials('aws-default-region')
             AWS_SOURCE = credentials('aws-source')
-            PATH_PRJ = "./${project}.csproj"
         }
         stages {
             stage('Login') {
@@ -47,6 +46,7 @@ def call(String project) {
         post {
             always {
                 sendTelegramNotification(TELEGRAM_BOT_TOKEN, TELEGRAM_CHANNEL)
+                cleanWs()
             }
         }
     }
