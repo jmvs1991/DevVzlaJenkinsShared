@@ -29,7 +29,7 @@ def call(String project) {
                 }
                 steps {
                     echo 'Pack..'
-                    sh "dotnet pack -c Release ${PATH_PRJ} --output nupkgs"
+                    sh "dotnet pack -c Release ./ --output nupkgs"
                 }
             }
             stage('Publish') {
