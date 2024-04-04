@@ -47,7 +47,6 @@ def call(String project) {
         post {
             always {
                 sendTelegramNotification(TELEGRAM_BOT_TOKEN, TELEGRAM_CHANNEL)
-                cleanWs()
             }
         }
     }
