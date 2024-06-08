@@ -60,7 +60,7 @@ def call(String project, String folder, String jenkinsfile, boolean forceSteps =
             stage('Publish') {
                 when {
                     anyOf {
-                        tag "release-*"
+                        tag "release-${project}-*"
                     }
                     anyOf {
                         changeset "${folder}/**/*"
