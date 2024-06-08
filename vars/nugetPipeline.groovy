@@ -15,6 +15,7 @@ def call(String project, String folder, String jenkinsfile, boolean forceSteps =
             stage('Login') {
                 when {
                     anyOf {
+                        tag "release-${project}-*"
                         changeset "${folder}/**/*"
                         changeset "${jenkinsfile}"
                         expression {
@@ -29,6 +30,7 @@ def call(String project, String folder, String jenkinsfile, boolean forceSteps =
             stage('Restore') {
                 when {
                     anyOf {
+                        tag "release-${project}-*"
                         changeset "${folder}/**/*"
                         changeset "${jenkinsfile}"
                         expression {
@@ -45,6 +47,7 @@ def call(String project, String folder, String jenkinsfile, boolean forceSteps =
             stage('Build') {
                 when {
                     anyOf {
+                        tag "release-${project}-*"
                         changeset "${folder}/**/*"
                         changeset "${jenkinsfile}"
                         expression {
@@ -61,9 +64,6 @@ def call(String project, String folder, String jenkinsfile, boolean forceSteps =
                 when {
                     anyOf {
                         tag "release-${project}-*"
-                    }
-                    anyOf {
-                        changeset "${folder}/**/*"
                         expression {
                             forceSteps == true || forcePublish == true
                         }
