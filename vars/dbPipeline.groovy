@@ -7,8 +7,7 @@ def call(String project, String db_password) {
             AWS_CODE_ARTIFACT_DOMAIN = credentials('aws-code-artifact-domain')
             AWS_CODE_ARTIFACT_DOMAIN_OWNER = credentials('aws-code-artifact-domain-owner')
             AWS_DEFAULT_REGION = credentials('aws-default-region')
-            DB_USER = credentials('db-user')
-            DB_PASSWORD = credentials('db-password')
+            SQL_SERVER_CRED = credentials('sql-server-cred')
         }
         stages {
             stage('Determine Environment') {
@@ -58,6 +57,24 @@ def call(String project, String db_password) {
                     }
                 }
             }
+            stage('Check Database Connection') {
+                steps {
+                    script {
+                        try {
+                            def result = sql(
+                                databaseType: 'SQLServer',
+                                credentialsId: env.SQL_SERVER_CRED,
+                                driverClass: 'com.microsoft.sqlserver.jdbc.SQLServerDriver',
+                                url: env.DATA_SOURCE,
+                                sql: 'SELECT 1'
+                            )
+                            echo "Database connection successful"
+                        } catch (SQLException sqlException) {
+                            error "Failed to connect to database: ${sqlException.message}"
+                        }
+                    }
+                }
+            }
             stage('Login') {
                 when {
                     expression {
@@ -80,7 +97,7 @@ def call(String project, String db_password) {
 
                         dir("${project}.SchemaInitialization") {
                             sh 'dotnet clean'
-                            sh ("dotnet run Enviroment:${ENVIRONMENT} DataSource:${DATA_SOURCE} User:${DB_USER} Password=${db_password}")
+                            sh ("dotnet run Enviroment:${ENVIRONMENT} DataSource:${DATA_SOURCE} User:${SQL_SERVER_CRED_USR} Password=${SQL_SERVER_CRED_PSW}")
                             // wrap([$class: 'MaskPasswordsBuildWrapper', varPasswordPairs: [[password: "${DATA_SOURCE}", var: 'PSWD']]]) {
                             //     sh 'dotnet clean'
                             //     sh ('dotnet run Enviroment:$ENVIRONMENT DataSource:$DATA_SOURCE User:$DB_USER Password=$DB_PASSWORD')
