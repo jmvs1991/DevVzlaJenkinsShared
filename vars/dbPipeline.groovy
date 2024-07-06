@@ -7,6 +7,8 @@ def call(String project) {
             AWS_CODE_ARTIFACT_DOMAIN = credentials('aws-code-artifact-domain')
             AWS_CODE_ARTIFACT_DOMAIN_OWNER = credentials('aws-code-artifact-domain-owner')
             AWS_DEFAULT_REGION = credentials('aws-default-region')
+            DB_USER = credentials('db-user')
+            DB_PASSWORD = credentials('db-password')
         }
         stages {
             stage('Determine Environment') {
@@ -40,15 +42,11 @@ def call(String project) {
                                     message: 'Please provide the following information:', 
                                     parameters: [
                                         password(name: 'DATA_SOURCE', description: 'Database IP'),
-                                        password(name: 'USER', description: 'User'),
-                                        password(name: 'PASSWORD', description: 'Password'),
                                         booleanParam(name: 'PROCEED', description: 'Do you want to proceed?', defaultValue: false),
                                         booleanParam(name: 'INITIALIZE', description: 'Do you want to run the database initialization scripts?', defaultValue: false)
                                     ]
                                 )
                                 env.DATA_SOURCE = userInput.DATA_SOURCE
-                                env.USER = userInput.USER
-                                env.PASSWORD = userInput.PASSWORD
                                 env.PROCEED = userInput.PROCEED.toString()
                                 env.INITIALIZE = userInput.INITIALIZE.toString()
                             }
@@ -81,9 +79,9 @@ def call(String project) {
                         echo "Running database initialization scripts..."
 
                         dir("${project}.SchemaInitialization") {
-                            wrap([$class: 'MaskPasswordsBuildWrapper', varPasswordPairs: [[password: "${PASSWORD}", var: 'PSWD'], [password: "${DATA_SOURCE}", var: 'PSWD'], [password: "${USER}", var: 'PSWD']]]) {
+                            wrap([$class: 'MaskPasswordsBuildWrapper', varPasswordPairs: [[password: "${DATA_SOURCE}", var: 'PSWD']]]) {
                                 sh 'dotnet clean'
-                                sh ('dotnet run Enviroment:$ENVIRONMENT DataSource:$DATA_SOURCE User:$USER Password=$PASSWORD')
+                                sh ('dotnet run Enviroment:$ENVIRONMENT DataSource:$DATA_SOURCE User:$DB_USER Password=$DB_PASSWORD')
                             }
                         }
                     }
