@@ -1,4 +1,4 @@
-def call() {
+def call(String project) {
     pipeline {
         agent any
         environment {
@@ -9,24 +9,52 @@ def call() {
             AWS_DEFAULT_REGION = credentials('aws-default-region')
         }
         stages {
+            stage('Determine Environment') {
+                steps {
+                    script {
+                        def branchName = env.BRANCH_NAME
+                        switch(branchName) {
+                            case 'develop':
+                                env.ENVIRONMENT = "Test"
+                                break
+                            case 'stage':
+                                env.ENVIRONMENT = "Stage"
+                                break
+                            case 'main':
+                                env.ENVIRONMENT = "Main"
+                                break
+                            default:
+                                error("Unknown branch: ${branchName}")
+                        }
+                        echo "Environment set to: ${env.ENVIRONMENT}"
+                    }
+                }
+            }
             stage('Input Data') {
                 steps {
                     script {
                         try {
                             timeout(time: 2, unit: 'MINUTES') {
-                                def userInput = input(id: 'userInput', message: 'Por favor, proporciona la siguiente información:', parameters: [
-                                string(name: 'DATA_SOURCE', description: 'Ip de la base de datos', defaultValue: ''),
-                                string(name: 'USER', description: 'Usuario', defaultValue: ''),
-                                string(name: 'PASSWORD', description: 'Password', defaultValue: ''),
-                                booleanParam(name: 'PROCEED', description: '¿Deseas continuar con el proceso?', defaultValue: true)
-                            ])
+                                def userInput = input(
+                                    id: 'userInput', 
+                                    message: 'Please provide the following information:', 
+                                    parameters: [
+                                        string(name: 'DATA_SOURCE', description: 'Database IP', defaultValue: ''),
+                                        string(name: 'USER', description: 'User', defaultValue: ''),
+                                        password(name: 'PASSWORD', description: 'Password'),
+                                        booleanParam(name: 'PROCEED', description: 'Do you want to proceed?', defaultValue: true),
+                                        booleanParam(name: 'INITIALIZE', description: 'Do you want to run the database initialization scripts?', defaultValue: false)
+                                    ]
+                                )
+                                // Asigna la entrada del usuario a variables de entorno de manera segura
                                 env.DATA_SOURCE = userInput.DATA_SOURCE
                                 env.USER = userInput.USER
                                 env.PASSWORD = userInput.PASSWORD
-                                env.PROCEED = userInput.PROCEED
-                            }   
+                                env.PROCEED = userInput.PROCEED.toString()
+                                env.INITIALIZE = userInput.INITIALIZE.toString()
+                            }
                         } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
-                            echo "No se proporcionó la información dentro del tiempo límite. Abortando..."
+                            echo "The information was not provided within the time limit. Aborting..."
                             currentBuild.result = 'ABORTED'
                             return
                         }
@@ -40,12 +68,36 @@ def call() {
                     }
                 }
                 steps {
+                    // Se asume que awsLogin es una función definida en otro lugar del pipeline o en un script de Jenkins
                     awsLogin(AWS_CODE_ARTIFACT_DOMAIN, AWS_CODE_ARTIFACT_DOMAIN_OWNER, AWS_DEFAULT_REGION)
+                }
+            }
+            stage('Initialize DB') {
+                when {
+                    expression {
+                        return env.PROCEED == "true" && env.INITIALIZE == "true"
+                    }
+                }
+                steps {
+                    script {
+                        // Ejecuta los comandos de inicialización de la base de datos
+                        echo "Running database initialization scripts..."
+                        sh "cd ./${project}.SchemaInitialization/"
+                        sh 'dotnet clean'
+                        sh """
+                            dotnet run Enviroment:${env.ENVIRONMENT} \\
+                            DataSource:${env.DATA_SOURCE} \\
+                            User:${env.USER} \\
+                            Password=${env.PASSWORD}
+                        """
+                        sh 'cd ..'
+                    }
                 }
             }
         }
         post {
             always {
+                // Envía una notificación a Telegram y limpia el espacio de trabajo
                 sendTelegramNotification(TELEGRAM_BOT_TOKEN, TELEGRAM_CHANNEL)
                 cleanWs()
             }
