@@ -7,11 +7,15 @@ def call() {
                     script {
                         def userInput = input(
                             id: 'userInput', message: 'Por favor, proporciona la siguiente información:', parameters: [
-                                string(name: 'PROJECT_NAME', description: 'Nombre del Proyecto', defaultValue: 'MiProyecto'),
+                                string(name: 'DATA_SOURCE', description: 'Ip de la base de datos', defaultValue: ''),
+                                string(name: 'USER', description: 'Usuario', defaultValue: ''),
+                                string(name: 'PASSWORD', description: 'Password', defaultValue: ''),
                                 booleanParam(name: 'PROCEED', description: '¿Deseas continuar con el proceso?', defaultValue: true)
                             ]
                         )
-                        env.PROJECT_NAME = userInput.PROJECT_NAME
+                        env.DATA_SOURCE = userInput.DATA_SOURCE
+                        env.USER = userInput.USER
+                        env.PASSWORD = userInput.PASSWORD
                         env.PROCEED = userInput.PROCEED
                     }
                 }
