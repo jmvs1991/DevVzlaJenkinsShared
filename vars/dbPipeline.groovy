@@ -9,16 +9,41 @@ def call() {
             AWS_DEFAULT_REGION = credentials('aws-default-region')
         }
         stages {
-            stage('Login') {
+            stage('Input Data') {
                 steps {
-                    awsLogin(AWS_CODE_ARTIFACT_DOMAIN, AWS_CODE_ARTIFACT_DOMAIN_OWNER, AWS_DEFAULT_REGION)
+                    script {
+                        def userInput = input(
+                            id: 'userInput', message: 'Por favor, proporciona la siguiente información:', parameters: [
+                                string(name: 'PROJECT_NAME', description: 'Nombre del Proyecto', defaultValue: 'MiProyecto'),
+                                booleanParam(name: 'PROCEED', description: '¿Deseas continuar con el proceso?', defaultValue: true)
+                            ]
+                        )
+                        env.PROJECT_NAME = userInput.PROJECT_NAME
+                        env.PROCEED = userInput.PROCEED
+                    }
+                }
+            }
+            stage('Login') {
+                when {
+                    expression {
+                        return env.PROCEED.toBoolean()
+                    }
+                }
+                steps {
+                    script {
+                        echo "Iniciando sesión en AWS para el proyecto ${env.PROJECT_NAME}"
+                        awsLogin(AWS_CODE_ARTIFACT_DOMAIN, AWS_CODE_ARTIFACT_DOMAIN_OWNER, AWS_DEFAULT_REGION)
+                    }
                 }
             }
         }
         post {
             always {
-                sendTelegramNotification(TELEGRAM_BOT_TOKEN, TELEGRAM_CHANNEL)
-                cleanWs()
+                script {
+                    echo "Enviando notificación a Telegram para el proyecto ${env.PROJECT_NAME}"
+                    sendTelegramNotification(TELEGRAM_BOT_TOKEN, TELEGRAM_CHANNEL)
+                    cleanWs()
+                }
             }
         }
     }
