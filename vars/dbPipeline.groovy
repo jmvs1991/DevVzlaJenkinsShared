@@ -81,7 +81,7 @@ def call(String project) {
                         echo "Running database initialization scripts..."
                         dir("${project}.SchemaInitialization") {
                             sh 'dotnet clean'
-                            sh ('dotnet run Enviroment:${ENVIRONMENT} DataSource:${DATA_SOURCE} User:${USER} Password=${PASSWORD}')
+                            sh ('dotnet run Enviroment:$ENVIRONMENT DataSource:$DATA_SOURCE User:$USER Password=$PASSWORD')
                         }
                     }
                 }
