@@ -1,4 +1,4 @@
-def call(String project) {
+def call(String project, String password) {
     pipeline {
         agent any
         environment {
@@ -80,7 +80,7 @@ def call(String project) {
 
                         dir("${project}.SchemaInitialization") {
                             sh 'dotnet clean'
-                            sh ('dotnet run Enviroment:${ENVIRONMENT} DataSource:${DATA_SOURCE} User:${DB_USER} Password=${DB_PASSWORD}')
+                            sh ('dotnet run Enviroment:${ENVIRONMENT} DataSource:${DATA_SOURCE} User:${DB_USER} Password=${password}')
                             // wrap([$class: 'MaskPasswordsBuildWrapper', varPasswordPairs: [[password: "${DATA_SOURCE}", var: 'PSWD']]]) {
                             //     sh 'dotnet clean'
                             //     sh ('dotnet run Enviroment:$ENVIRONMENT DataSource:$DATA_SOURCE User:$DB_USER Password=$DB_PASSWORD')
