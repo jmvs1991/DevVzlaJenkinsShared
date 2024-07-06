@@ -1,4 +1,4 @@
-def call(String project, String db_password) {
+def call(String project) {
     pipeline {
         agent any
         environment {
@@ -53,24 +53,6 @@ def call(String project, String db_password) {
                             echo "The information was not provided within the time limit. Aborting..."
                             currentBuild.result = 'ABORTED'
                             return
-                        }
-                    }
-                }
-            }
-            stage('Check Database Connection') {
-                steps {
-                    script {
-                        try {
-                            def result = sql(
-                                databaseType: 'SQLServer',
-                                credentialsId: env.SQL_SERVER_CRED,
-                                driverClass: 'com.microsoft.sqlserver.jdbc.SQLServerDriver',
-                                url: env.DATA_SOURCE,
-                                sql: 'SELECT 1'
-                            )
-                            echo "Database connection successful"
-                        } catch (Exception e) {
-                            error "Failed to connect to database: ${sqlException.message}"
                         }
                     }
                 }
