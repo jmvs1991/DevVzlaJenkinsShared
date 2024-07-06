@@ -54,11 +54,6 @@ def call(String project) {
                 }
             }
             stage('Login') {
-                when {
-                    expression {
-                        return env.PROCEED == "true"
-                    }
-                }
                 steps {
                     awsLogin(AWS_CODE_ARTIFACT_DOMAIN, AWS_CODE_ARTIFACT_DOMAIN_OWNER, AWS_DEFAULT_REGION)
                 }
@@ -66,7 +61,7 @@ def call(String project) {
             stage('Initialize DB') {
                 when {
                     expression {
-                        return env.PROCEED == "true" && env.INITIALIZE == "true"
+                        return env.INITIALIZE == "true"
                     }
                 }
                 steps {
