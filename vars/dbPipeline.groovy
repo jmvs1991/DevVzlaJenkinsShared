@@ -13,19 +13,7 @@ def call(String project) {
                 steps {
                     script {
                         def branchName = env.BRANCH_NAME
-                        switch(branchName) {
-                            case 'develop':
-                                env.ENVIRONMENT = "Test"
-                                break
-                            case 'stage':
-                                env.ENVIRONMENT = "Stage"
-                                break
-                            case 'main':
-                                env.ENVIRONMENT = "Main"
-                                break
-                            default:
-                                error("Unknown branch: ${branchName}")
-                        }
+                        env.ENVIRONMENT = determineEnvironment(branchName)
                         echo "Environment set to: ${env.ENVIRONMENT}"
                     }
                 }
@@ -68,8 +56,10 @@ def call(String project) {
                     }
                 }
                 steps {
-                    // Se asume que awsLogin es una función definida en otro lugar del pipeline o en un script de Jenkins
-                    awsLogin(AWS_CODE_ARTIFACT_DOMAIN, AWS_CODE_ARTIFACT_DOMAIN_OWNER, AWS_DEFAULT_REGION)
+                    withCredentials([string(credentialsId: 'aws-credentials', variable: 'AWS_ACCESS_KEY_ID'),
+                                     string(credentialsId: 'aws-secret-key', variable: 'AWS_SECRET_ACCESS_KEY')]) {
+                        awsLogin(AWS_CODE_ARTIFACT_DOMAIN, AWS_CODE_ARTIFACT_DOMAIN_OWNER, AWS_DEFAULT_REGION)
+                    }
                 }
             }
             stage('Initialize DB') {
@@ -80,29 +70,41 @@ def call(String project) {
                 }
                 steps {
                     script {
-                        // Ejecuta los comandos de inicialización de la base de datos
                         echo "Running database initialization scripts..."
-                        sh "cd ./${project}.SchemaInitialization/"
-                        sh 'dotnet clean'
-                        sh (
-                            '''
-                                dotnet run Enviroment:$env.ENVIRONMENT \\
-                                DataSource:$env.DATA_SOURCE \\
-                                User:$env.USER \\
-                                Password=$env.PASSWORD
-                            '''
-                        )
-                        sh 'cd ..'
+                        dir("${project}.SchemaInitialization") {
+                            sh 'dotnet clean'
+                            withCredentials([password(credentialsId: 'db-password', variable: 'DB_PASSWORD')]) {
+                                sh """
+                                    dotnet run \\
+                                    Environment=$env.ENVIRONMENT \\
+                                    DataSource=$env.DATA_SOURCE \\
+                                    User=$env.USER \\
+                                    Password=$DB_PASSWORD
+                                """
+                            }
+                        }
                     }
                 }
             }
         }
         post {
             always {
-                // Envía una notificación a Telegram y limpia el espacio de trabajo
                 sendTelegramNotification(TELEGRAM_BOT_TOKEN, TELEGRAM_CHANNEL)
                 cleanWs()
             }
         }
+    }
+}
+
+def determineEnvironment(branchName) {
+    switch(branchName) {
+        case 'develop':
+            return "Test"
+        case 'stage':
+            return "Stage"
+        case 'main':
+            return "Main"
+        default:
+            error("Unknown branch: ${branchName}")
     }
 }
