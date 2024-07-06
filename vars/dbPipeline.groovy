@@ -28,6 +28,11 @@ def call() {
                 }
             }
             stage('Login') {
+                when {
+                    expression {
+                        return env.PROCEED == "true"
+                    }
+                }
                 steps {
                     awsLogin(AWS_CODE_ARTIFACT_DOMAIN, AWS_CODE_ARTIFACT_DOMAIN_OWNER, AWS_DEFAULT_REGION)
                 }
