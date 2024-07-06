@@ -1,11 +1,6 @@
 def call() {
     pipeline {
         agent any
-        environment {
-            AWS_CODE_ARTIFACT_DOMAIN = credentials('aws-code-artifact-domain')
-            AWS_CODE_ARTIFACT_DOMAIN_OWNER = credentials('aws-code-artifact-domain-owner')
-            AWS_DEFAULT_REGION = credentials('aws-default-region')
-        }
         stages {
             stage('Input Data') {
                 steps {
@@ -19,26 +14,6 @@ def call() {
                         env.PROJECT_NAME = userInput.PROJECT_NAME
                         env.PROCEED = userInput.PROCEED
                     }
-                }
-            }
-            stage('Login') {
-                when {
-                    expression {
-                        return env.PROCEED.toBoolean()
-                    }
-                }
-                steps {
-                    script {
-                        echo "Iniciando sesión en AWS para el proyecto ${env.PROJECT_NAME}"
-                        awsLogin(AWS_CODE_ARTIFACT_DOMAIN, AWS_CODE_ARTIFACT_DOMAIN_OWNER, AWS_DEFAULT_REGION)
-                    }
-                }
-            }
-        }
-        post {
-            always {
-                script {
-                    cleanWs()
                 }
             }
         }
