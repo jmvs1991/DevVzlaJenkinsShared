@@ -79,9 +79,12 @@ def call(String project) {
                 steps {
                     script {
                         echo "Running database initialization scripts..."
+
                         dir("${project}.SchemaInitialization") {
-                            sh 'dotnet clean'
-                            sh ('dotnet run Enviroment:$ENVIRONMENT DataSource:$DATA_SOURCE User:$USER Password=$PASSWORD')
+                            wrap([$class: 'MaskPasswordsBuildWrapper', varPasswordPairs: [[password: "${PASSWORD}", var: 'PSWD']]]) {
+                                sh 'dotnet clean'
+                                sh ('dotnet run Enviroment:$ENVIRONMENT DataSource:$DATA_SOURCE User:$USER Password=$PASSWORD')
+                            }
                         }
                     }
                 }
@@ -91,18 +94,6 @@ def call(String project) {
             always {
                 sendTelegramNotification(TELEGRAM_BOT_TOKEN, TELEGRAM_CHANNEL)
                 cleanWs()
-                maskPasswords([
-                    [
-                        var: 'PASSWORD',
-                        password: env.PASSWORD,
-                        showVar: false,
-                    ],
-                    [
-                        var: 'USER',
-                        password: env.USER,
-                        showVar: false,
-                    ]
-                ])
             }
         }
     }
