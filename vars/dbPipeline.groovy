@@ -40,6 +40,7 @@ def call(String project) {
                                     id: 'userInput', 
                                     message: 'Please provide the following information:', 
                                     parameters: [
+                                        booleanParam(name: 'PROCEED', description: 'Do you want to proceed?', defaultValue: false),
                                         booleanParam(name: 'INITIALIZE', description: 'Do you want to run the database initialization scripts?', defaultValue: false)
                                     ]
                                 )
