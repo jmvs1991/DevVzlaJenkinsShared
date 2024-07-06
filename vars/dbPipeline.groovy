@@ -69,7 +69,7 @@ def call(String project, String db_password) {
                                 sql: 'SELECT 1'
                             )
                             echo "Database connection successful"
-                        } catch (SQLException sqlException) {
+                        } catch (Exception e) {
                             error "Failed to connect to database: ${sqlException.message}"
                         }
                     }
