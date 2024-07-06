@@ -46,7 +46,6 @@ def call(String project) {
                                         booleanParam(name: 'INITIALIZE', description: 'Do you want to run the database initialization scripts?', defaultValue: false)
                                     ]
                                 )
-                                // Asigna la entrada del usuario a variables de entorno de manera segura
                                 env.DATA_SOURCE = userInput.DATA_SOURCE
                                 env.USER = userInput.USER
                                 env.PASSWORD = userInput.PASSWORD
@@ -68,7 +67,6 @@ def call(String project) {
                     }
                 }
                 steps {
-                    // Se asume que awsLogin es una función definida en otro lugar del pipeline o en un script de Jenkins
                     awsLogin(AWS_CODE_ARTIFACT_DOMAIN, AWS_CODE_ARTIFACT_DOMAIN_OWNER, AWS_DEFAULT_REGION)
                 }
             }
@@ -80,18 +78,10 @@ def call(String project) {
                 }
                 steps {
                     script {
-                        // Ejecuta los comandos de inicialización de la base de datos
                         echo "Running database initialization scripts..."
                         dir("${project}.SchemaInitialization") {
                             sh 'dotnet clean'
-                            sh (
-                                """
-                                    dotnet run Enviroment:${env.ENVIRONMENT} \\
-                                    DataSource:${env.DATA_SOURCE} \\
-                                    User:${env.USER} \\
-                                    Password=${env.PASSWORD}
-                                """
-                            )
+                            sh ('dotnet run Enviroment:${env.ENVIRONMENT} DataSource:${env.DATA_SOURCE} User:${env.USER} Password=${env.PASSWORD}')
                         }
                     }
                 }
@@ -99,7 +89,6 @@ def call(String project) {
         }
         post {
             always {
-                // Envía una notificación a Telegram y limpia el espacio de trabajo
                 sendTelegramNotification(TELEGRAM_BOT_TOKEN, TELEGRAM_CHANNEL)
                 cleanWs()
             }
