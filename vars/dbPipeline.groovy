@@ -27,6 +27,17 @@ def call() {
                     }
                 }
             }
+            stage('Login') {
+                steps {
+                    awsLogin(AWS_CODE_ARTIFACT_DOMAIN, AWS_CODE_ARTIFACT_DOMAIN_OWNER, AWS_DEFAULT_REGION)
+                }
+            }
+        }
+        post {
+            always {
+                sendTelegramNotification(TELEGRAM_BOT_TOKEN, TELEGRAM_CHANNEL)
+                cleanWs()
+            }
         }
     }
 }
