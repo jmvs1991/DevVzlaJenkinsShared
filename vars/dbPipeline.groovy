@@ -81,7 +81,7 @@ def call(String project) {
                         echo "Running database initialization scripts..."
 
                         dir("${project}.SchemaInitialization") {
-                            wrap([$class: 'MaskPasswordsBuildWrapper', varPasswordPairs: [[password: "${PASSWORD}", var: 'PSWD']]]) {
+                            wrap([$class: 'MaskPasswordsBuildWrapper', varPasswordPairs: [[password: "${PASSWORD}", var: 'PSWD'], [password: "${DATA_SOURCE}", var: 'PSWD']]]) {
                                 sh 'dotnet clean'
                                 sh ('dotnet run Enviroment:$ENVIRONMENT DataSource:$DATA_SOURCE User:$USER Password=$PASSWORD')
                             }
