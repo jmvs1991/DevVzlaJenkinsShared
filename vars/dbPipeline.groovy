@@ -86,10 +86,10 @@ def call(String project) {
                             sh 'dotnet clean'
                             sh (
                                 '''
-                                    dotnet run Enviroment:$env.ENVIRONMENT \\
-                                    DataSource:$env.DATA_SOURCE \\
-                                    User:$env.USER \\
-                                    Password=$env.PASSWORD
+                                    dotnet run Enviroment:${env.ENVIRONMENT} \\
+                                    DataSource:${env.DATA_SOURCE} \\
+                                    User:${env.USER} \\
+                                    Password=${env.PASSWORD}
                                 '''
                             )
                         }
