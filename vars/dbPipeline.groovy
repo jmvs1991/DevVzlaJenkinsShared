@@ -85,12 +85,12 @@ def call(String project) {
                         dir("${project}.SchemaInitialization") {
                             sh 'dotnet clean'
                             sh (
-                                '''
+                                """
                                     dotnet run Enviroment:${env.ENVIRONMENT} \\
                                     DataSource:${env.DATA_SOURCE} \\
                                     User:${env.USER} \\
                                     Password=${env.PASSWORD}
-                                '''
+                                """
                             )
                         }
                     }
