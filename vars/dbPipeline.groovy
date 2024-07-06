@@ -80,7 +80,7 @@ def call(String project, String db_password) {
 
                         dir("${project}.SchemaInitialization") {
                             sh 'dotnet clean'
-                            sh ('dotnet run Enviroment:${ENVIRONMENT} DataSource:${DATA_SOURCE} User:${DB_USER} Password=${db_password}')
+                            sh ("dotnet run Enviroment:${ENVIRONMENT} DataSource:${DATA_SOURCE} User:${DB_USER} Password=${db_password}")
                             // wrap([$class: 'MaskPasswordsBuildWrapper', varPasswordPairs: [[password: "${DATA_SOURCE}", var: 'PSWD']]]) {
                             //     sh 'dotnet clean'
                             //     sh ('dotnet run Enviroment:$ENVIRONMENT DataSource:$DATA_SOURCE User:$DB_USER Password=$DB_PASSWORD')
