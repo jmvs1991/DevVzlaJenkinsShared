@@ -40,13 +40,9 @@ def call(String project) {
                                     id: 'userInput', 
                                     message: 'Please provide the following information:', 
                                     parameters: [
-                                        password(name: 'DATA_SOURCE', description: 'Database IP'),
-                                        booleanParam(name: 'PROCEED', description: 'Do you want to proceed?', defaultValue: false),
                                         booleanParam(name: 'INITIALIZE', description: 'Do you want to run the database initialization scripts?', defaultValue: false)
                                     ]
                                 )
-                                env.DATA_SOURCE = userInput.DATA_SOURCE
-                                env.PROCEED = userInput.PROCEED.toString()
                                 env.INITIALIZE = userInput.INITIALIZE.toString()
                             }
                         } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
@@ -79,7 +75,7 @@ def call(String project) {
 
                         dir("${project}.SchemaInitialization") {
                             sh 'dotnet clean'
-                            sh ("dotnet run Enviroment:${ENVIRONMENT} DataSource:${DATA_SOURCE} User:${SQL_SERVER_CRED_USR} Password=${SQL_SERVER_CRED_PSW}")
+                            sh ("dotnet run Enviroment:${ENVIRONMENT}")
                             // wrap([$class: 'MaskPasswordsBuildWrapper', varPasswordPairs: [[password: "${DATA_SOURCE}", var: 'PSWD']]]) {
                             //     sh 'dotnet clean'
                             //     sh ('dotnet run Enviroment:$ENVIRONMENT DataSource:$DATA_SOURCE User:$DB_USER Password=$DB_PASSWORD')
