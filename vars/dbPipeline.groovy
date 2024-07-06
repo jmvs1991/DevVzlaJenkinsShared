@@ -39,10 +39,10 @@ def call(String project) {
                                     id: 'userInput', 
                                     message: 'Please provide the following information:', 
                                     parameters: [
-                                        string(name: 'DATA_SOURCE', description: 'Database IP', defaultValue: ''),
-                                        string(name: 'USER', description: 'User', defaultValue: ''),
+                                        password(name: 'DATA_SOURCE', description: 'Database IP'),
+                                        password(name: 'USER', description: 'User'),
                                         password(name: 'PASSWORD', description: 'Password'),
-                                        booleanParam(name: 'PROCEED', description: 'Do you want to proceed?', defaultValue: true),
+                                        booleanParam(name: 'PROCEED', description: 'Do you want to proceed?', defaultValue: false),
                                         booleanParam(name: 'INITIALIZE', description: 'Do you want to run the database initialization scripts?', defaultValue: false)
                                     ]
                                 )
@@ -81,7 +81,7 @@ def call(String project) {
                         echo "Running database initialization scripts..."
 
                         dir("${project}.SchemaInitialization") {
-                            wrap([$class: 'MaskPasswordsBuildWrapper', varPasswordPairs: [[password: "${PASSWORD}", var: 'PSWD'], [password: "${DATA_SOURCE}", var: 'PSWD']]]) {
+                            wrap([$class: 'MaskPasswordsBuildWrapper', varPasswordPairs: [[password: "${PASSWORD}", var: 'PSWD'], [password: "${DATA_SOURCE}", var: 'PSWD'], [password: "${USER}", var: 'PSWD']]]) {
                                 sh 'dotnet clean'
                                 sh ('dotnet run Enviroment:$ENVIRONMENT DataSource:$DATA_SOURCE User:$USER Password=$PASSWORD')
                             }
