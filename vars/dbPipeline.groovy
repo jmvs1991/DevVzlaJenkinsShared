@@ -91,7 +91,10 @@ def call(String project) {
             always {
                 sendTelegramNotification(TELEGRAM_BOT_TOKEN, TELEGRAM_CHANNEL)
                 cleanWs()
-                maskPasswords()
+                maskPasswords([
+                    varPasswordPair(passwordVariable: 'PASSWORD', maskType: 'password'),
+                    varPasswordPair(passwordVariable: 'USER', maskType: 'password')
+                ])
             }
         }
     }
