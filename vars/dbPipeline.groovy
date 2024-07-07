@@ -71,7 +71,7 @@ def call(String project) {
 
                         dir("${project}.SchemaInitialization") {
                             sh 'dotnet clean'
-                            sh 'cp $APP_SETTINGS_TEST .'
+                            sh 'sudo cp $APP_SETTINGS_TEST .'
                             sh ("dotnet run Enviroment:${ENVIRONMENT}")
                         }
                     }
