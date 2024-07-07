@@ -34,7 +34,7 @@ def call(String project) {
             stage('Read Properties') {
                 steps {
                     script {
-                        def props = readProperties file: 'config.properties'
+                        def props = readProperties file: 'dir/config.properties'
                         env.INITIALIZE = props['migration.runInitialize']
                         echo "Value: ${env.INITIALIZE}"
                         // try {
