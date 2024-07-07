@@ -8,6 +8,8 @@ def call(String project) {
             AWS_CODE_ARTIFACT_DOMAIN_OWNER = credentials('aws-code-artifact-domain-owner')
             AWS_DEFAULT_REGION = credentials('aws-default-region')
             APP_SETTINGS_TEST = credentials('appsettings.Test.json')
+            APP_SETTINGS_STAGE = credentials('appsettings.Stage.json')
+            APP_SETTINGS_MAIN = credentials('appsettings.Main.json')
         }
         stages {
             stage('Determine Environment') {
@@ -72,6 +74,8 @@ def call(String project) {
                         dir("${project}.SchemaInitialization") {
                             sh 'dotnet clean'
                             sh 'cp $APP_SETTINGS_TEST .'
+                            sh 'cp $APP_SETTINGS_STAGE .'
+                            sh 'cp $APP_SETTINGS_MAIN .'
                             sh ("dotnet run Enviroment:${ENVIRONMENT}")
                         }
                     }
