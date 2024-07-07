@@ -1,4 +1,4 @@
-def call(String project) {
+def call(String project, String artifactName) {
     pipeline {
         agent any
         environment {
@@ -10,6 +10,8 @@ def call(String project) {
             APP_SETTINGS_TEST = credentials('appsettings.Test.json')
             APP_SETTINGS_STAGE = credentials('appsettings.Stage.json')
             APP_SETTINGS_MAIN = credentials('appsettings.Main.json')
+            ARTIFACT_INITIALIZATION = "${artifactName}_initialization_${env.BRANCH_NAME}_${BUILD_NUMBER}.zip"
+            ARTIFACT_UPDATES = "${artifactName}_updates_${env.BRANCH_NAME}_${BUILD_NUMBER}.zip"
         }
         stages {
             stage('Determine Environment') {
@@ -81,12 +83,12 @@ def call(String project) {
                             def result = sh(script: "ls -d ${ENVIRONMENT}_Initialization_migration", returnStatus: true)
 
                             if (result == 0) {
-                                zip zipFile: "${ENVIRONMENT}_Initialization_migration.zip", archive: false, dir: "${ENVIRONMENT}_Initialization_migration"
-                                archiveArtifacts artifacts: "${ENVIRONMENT}_Initialization_migration.zip", fingerprint: true
+                                zip zipFile: "${ARTIFACT_INITIALIZATION}", archive: false, dir: "${ENVIRONMENT}_Initialization_migration"
+                                archiveArtifacts artifacts: "${ARTIFACT_INITIALIZATION}", fingerprint: true
                             } else if (result == 2) {
                                 echo "El directorio '${ENVIRONMENT}_Initialization_migration' está vacío."
                             } else {
-                                error "Error al verificar el directorio '${ENVIRONMENT}_Initialization_migration'."
+                                echo "Error al verificar el directorio '${ENVIRONMENT}_Initialization_migration'."
                             }
                         }
                     }
