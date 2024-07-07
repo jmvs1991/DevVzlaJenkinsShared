@@ -36,6 +36,7 @@ def call(String project) {
                     script {
                         def props = readProperties file: 'config.properties'
                         env.INITIALIZE = props['migration.runInitialize']
+                        echo "Value: ${env.INITIALIZE}"
                         // try {
                         //     timeout(time: 2, unit: 'MINUTES') {
                         //         def userInput = input(
