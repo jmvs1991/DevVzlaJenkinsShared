@@ -34,26 +34,23 @@ def call(String project) {
             stage('Read Properties') {
                 steps {
                     script {
-                        def props = readProperties file: 'dir/config.properties'
-                        env.INITIALIZE = props['migration.runInitialize']
-                        echo "Value: ${env.INITIALIZE}"
-                        // try {
-                        //     timeout(time: 2, unit: 'MINUTES') {
-                        //         def userInput = input(
-                        //             id: 'userInput', 
-                        //             message: 'Please provide the following information:', 
-                        //             parameters: [
-                        //                 booleanParam(name: 'PROCEED', description: 'Do you want to proceed?', defaultValue: false),
-                        //                 booleanParam(name: 'INITIALIZE', description: 'Do you want to run the database initialization scripts?', defaultValue: false)
-                        //             ]
-                        //         )
-                        //         env.INITIALIZE = userInput.INITIALIZE.toString()
-                        //     }
-                        // } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
-                        //     echo "The information was not provided within the time limit. Aborting..."
-                        //     currentBuild.result = 'ABORTED'
-                        //     return
-                        // }
+                        try {
+                            timeout(time: 2, unit: 'MINUTES') {
+                                def userInput = input(
+                                    id: 'userInput', 
+                                    message: 'Please provide the following information:', 
+                                    parameters: [
+                                        booleanParam(name: 'PROCEED', description: 'Do you want to proceed?', defaultValue: false),
+                                        booleanParam(name: 'INITIALIZE', description: 'Do you want to run the database initialization scripts?', defaultValue: false)
+                                    ]
+                                )
+                                env.INITIALIZE = userInput.INITIALIZE.toString()
+                            }
+                        } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
+                            echo "The information was not provided within the time limit. Aborting..."
+                            currentBuild.result = 'ABORTED'
+                            return
+                        }
                     }
                 }
             }
