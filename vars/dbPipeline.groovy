@@ -46,6 +46,7 @@ def call(String project, String artifactName) {
                                     id: 'userInput', 
                                     message: 'Please provide the following information:', 
                                     parameters: [
+                                        booleanParam(name: 'PROCEED', description: 'Do you want to proceed?', defaultValue: false),
                                         booleanParam(name: 'INITIALIZE', description: 'Do you want to run the database initialization scripts?', defaultValue: false)
                                     ]
                                 )
@@ -53,7 +54,7 @@ def call(String project, String artifactName) {
                             }
                         } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
                             echo "The information was not provided within the time limit. Aborting..."
-                            currentBuild.result = 'ABORTED'
+                            currentBuild.result = 'ABORTED' 
                             return
                         }
                     }
