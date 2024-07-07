@@ -84,6 +84,9 @@ def call(String project) {
                                 zip zipFile: "${environment}_Initialization_migration", overwrite: true, archive: false, dir: "${environment}_Initialization_migration"
                                 archiveArtifacts artifacts: "${environment}_Initialization_migration", fingerprint: true
                             }
+                            else{
+                                error "El directorio ${environment}_Initialization_migration no existe."
+                            }
                         }
                     }
                 }
