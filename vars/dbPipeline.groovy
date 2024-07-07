@@ -46,7 +46,6 @@ def call(String project, String artifactName) {
                                     id: 'userInput', 
                                     message: 'Please provide the following information:', 
                                     parameters: [
-                                        booleanParam(name: 'PROCEED', description: 'Do you want to proceed?', defaultValue: false),
                                         booleanParam(name: 'INITIALIZE', description: 'Do you want to run the database initialization scripts?', defaultValue: false)
                                     ]
                                 )
@@ -113,9 +112,9 @@ def call(String project, String artifactName) {
                                 zip zipFile: "${ARTIFACT_INITIALIZATION}", archive: false, dir: "${migrationFolder}"
                                 archiveArtifacts artifacts: "${ARTIFACT_INITIALIZATION}", fingerprint: true
                             } else if (result == 2) {
-                                echo "El directorio '${migrationFolder}' está vacío."
+                                echo "The directory '${migrationFolder}' is empty."
                             } else {
-                                echo "Error al verificar el directorio '${migrationFolder}'."
+                                echo "Error checking the directory '${migrationFolder}'."
                             }
                         }
                     }
@@ -163,9 +162,9 @@ def call(String project, String artifactName) {
                                 zip zipFile: "${ARTIFACT_INITIALIZATION}", archive: false, dir: "${migrationFolder}"
                                 archiveArtifacts artifacts: "${ARTIFACT_INITIALIZATION}", fingerprint: true
                             } else if (result == 2) {
-                                echo "El directorio '${migrationFolder}' está vacío."
+                                echo "The directory '${migrationFolder}' is empty."
                             } else {
-                                echo "Error al verificar el directorio '${migrationFolder}'."
+                                echo "Error checking the directory '${migrationFolder}'."
                             }
                         }
                     }
