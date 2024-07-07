@@ -7,7 +7,7 @@ def call(String project) {
             AWS_CODE_ARTIFACT_DOMAIN = credentials('aws-code-artifact-domain')
             AWS_CODE_ARTIFACT_DOMAIN_OWNER = credentials('aws-code-artifact-domain-owner')
             AWS_DEFAULT_REGION = credentials('aws-default-region')
-            SQL_SERVER_CRED = credentials('sql-server-cred')
+            APP_SETTINGS_TEST = credentials('appsettings.Test.json')
         }
         stages {
             stage('Determine Environment') {
@@ -71,11 +71,11 @@ def call(String project) {
 
                         dir("${project}.SchemaInitialization") {
                             sh 'dotnet clean'
-                            sh ("dotnet run Enviroment:${ENVIRONMENT}")
-                            // wrap([$class: 'MaskPasswordsBuildWrapper', varPasswordPairs: [[password: "${DATA_SOURCE}", var: 'PSWD']]]) {
-                            //     sh 'dotnet clean'
-                            //     sh ('dotnet run Enviroment:$ENVIRONMENT DataSource:$DATA_SOURCE User:$DB_USER Password=$DB_PASSWORD')
-                            // }
+                            sh "dotnet build -o ${project}.SchemaInitialization.Build"
+                            dir("${project}.SchemaInitialization") {
+                                sh 'cp $APP_SETTINGS_TEST .'
+                                sh ("dotnet run Enviroment:${ENVIRONMENT}")
+                            }
                         }
                     }
                 }
@@ -84,7 +84,7 @@ def call(String project) {
         post {
             always {
                 sendTelegramNotification(TELEGRAM_BOT_TOKEN, TELEGRAM_CHANNEL)
-                cleanWs()
+                // cleanWs()
             }
         }
     }
