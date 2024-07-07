@@ -67,6 +67,11 @@ def call(String project, String artifactName) {
             }
             stage('Initialize DB') {
                 when {
+                    anyOf {
+                        branch 'develop'
+                        branch 'stage'
+                        branch 'main'
+                    }
                     expression {
                         return env.INITIALIZE == "true"
                     }
@@ -87,6 +92,11 @@ def call(String project, String artifactName) {
             }
             stage('Initialize Artifact') {
                 when {
+                    anyOf {
+                        branch 'develop'
+                        branch 'stage'
+                        branch 'main'
+                    }
                     expression {
                         return env.INITIALIZE == "true"
                     }
@@ -112,6 +122,13 @@ def call(String project, String artifactName) {
                 }
             }
             stage('Update DB') {
+                when {
+                    anyOf {
+                        branch 'develop'
+                        branch 'stage'
+                        branch 'main'
+                    }
+                }
                 steps {
                     script {
                         echo "Running database updates scripts..."
@@ -127,6 +144,13 @@ def call(String project, String artifactName) {
                 }
             }
             stage('Updates Artifact') {
+                when {
+                    anyOf {
+                        branch 'develop'
+                        branch 'stage'
+                        branch 'main'
+                    }
+                }
                 steps {
                     script {
                         echo "Generating artifact"
