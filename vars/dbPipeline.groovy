@@ -12,6 +12,7 @@ def call(String project, String artifactName) {
             APP_SETTINGS_MAIN = credentials('appsettings.Main.json')
             ARTIFACT_INITIALIZATION = "${artifactName}_initialization_${env.BRANCH_NAME}_${BUILD_NUMBER}.zip"
             ARTIFACT_UPDATES = "${artifactName}_updates_${env.BRANCH_NAME}_${BUILD_NUMBER}.zip"
+            INITIALIZATION_FOLDER = "${project}.SchemaInitialization"
         }
         stages {
             stage('Determine Environment') {
@@ -73,22 +74,37 @@ def call(String project, String artifactName) {
                     script {
                         echo "Running database initialization scripts..."
 
-                        dir("${project}.SchemaInitialization") {
+                        dir(INITIALIZATION_FOLDER) {
                             sh 'dotnet clean'
                             sh 'cp $APP_SETTINGS_TEST .'
                             sh 'cp $APP_SETTINGS_STAGE .'
                             sh 'cp $APP_SETTINGS_MAIN .'
                             sh ("dotnet run Enviroment:${ENVIRONMENT}")
+                        }
+                    }
+                }
+            }
+            stage('Initialize Artifact') {
+                when {
+                    expression {
+                        return env.INITIALIZE == "true"
+                    }
+                }
+                steps {
+                    script {
+                        echo "Generating artifact"
 
+                        dir(INITIALIZATION_FOLDER) {
+                            def migrationFolder = "${ENVIRONMENT}_Initialization_migration";
                             def result = sh(script: "ls -d ${ENVIRONMENT}_Initialization_migration", returnStatus: true)
 
                             if (result == 0) {
-                                zip zipFile: "${ARTIFACT_INITIALIZATION}", archive: false, dir: "${ENVIRONMENT}_Initialization_migration"
+                                zip zipFile: "${ARTIFACT_INITIALIZATION}", archive: false, dir: "${migrationFolder}"
                                 archiveArtifacts artifacts: "${ARTIFACT_INITIALIZATION}", fingerprint: true
                             } else if (result == 2) {
-                                echo "El directorio '${ENVIRONMENT}_Initialization_migration' está vacío."
+                                echo "El directorio '${migrationFolder}' está vacío."
                             } else {
-                                echo "Error al verificar el directorio '${ENVIRONMENT}_Initialization_migration'."
+                                echo "Error al verificar el directorio '${migrationFolder}'."
                             }
                         }
                     }
