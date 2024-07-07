@@ -78,14 +78,13 @@ def call(String project) {
                             sh 'cp $APP_SETTINGS_MAIN .'
                             sh ("dotnet run Enviroment:${ENVIRONMENT}")
 
-                            def file = new File("./${environment}_Initialization_migration")
+                            def result = sh(script: "ls -d ${environment}_Initialization_migration", returnStatus: true)
 
-                            if(file.exists()){
+                            if (result == 0) {
                                 zip zipFile: "${environment}_Initialization_migration", overwrite: true, archive: false, dir: "${environment}_Initialization_migration"
                                 archiveArtifacts artifacts: "${environment}_Initialization_migration", fingerprint: true
-                            }
-                            else{
-                                error "El directorio ${environment}_Initialization_migration no existe."
+                            } else {
+                                error "La carpeta '${folderName}' no existe en el directorio actual."
                             }
                         }
                     }
