@@ -13,6 +13,7 @@ def call(String project, String artifactName) {
             ARTIFACT_INITIALIZATION = "${artifactName}_initialization_${env.BRANCH_NAME}_${BUILD_NUMBER}.zip"
             ARTIFACT_UPDATES = "${artifactName}_updates_${env.BRANCH_NAME}_${BUILD_NUMBER}.zip"
             INITIALIZATION_FOLDER = "${project}.SchemaInitialization"
+            UPDATES_FOLDER = "${project}.SchemaUpdates"
         }
         stages {
             stage('Determine Environment') {
@@ -96,7 +97,43 @@ def call(String project, String artifactName) {
 
                         dir(INITIALIZATION_FOLDER) {
                             def migrationFolder = "${ENVIRONMENT}_Initialization_migration";
-                            def result = sh(script: "ls -d ${ENVIRONMENT}_Initialization_migration", returnStatus: true)
+                            def result = sh(script: "ls -d ${migrationFolder}", returnStatus: true)
+
+                            if (result == 0) {
+                                zip zipFile: "${ARTIFACT_INITIALIZATION}", archive: false, dir: "${migrationFolder}"
+                                archiveArtifacts artifacts: "${ARTIFACT_INITIALIZATION}", fingerprint: true
+                            } else if (result == 2) {
+                                echo "El directorio '${migrationFolder}' está vacío."
+                            } else {
+                                echo "Error al verificar el directorio '${migrationFolder}'."
+                            }
+                        }
+                    }
+                }
+            }
+            stage('Update DB') {
+                steps {
+                    script {
+                        echo "Running database updates scripts..."
+
+                        dir(UPDATES_FOLDER) {
+                            sh 'dotnet clean'
+                            sh 'cp $APP_SETTINGS_TEST .'
+                            sh 'cp $APP_SETTINGS_STAGE .'
+                            sh 'cp $APP_SETTINGS_MAIN .'
+                            sh ("dotnet run Enviroment:${ENVIRONMENT}")
+                        }
+                    }
+                }
+            }
+            stage('Updates Artifact') {
+                steps {
+                    script {
+                        echo "Generating artifact"
+
+                        dir(UPDATES_FOLDER) {
+                            def migrationFolder = "${ENVIRONMENT}_Updates_migration";
+                            def result = sh(script: "ls -d ${migrationFolder}", returnStatus: true)
 
                             if (result == 0) {
                                 zip zipFile: "${ARTIFACT_INITIALIZATION}", archive: false, dir: "${migrationFolder}"
