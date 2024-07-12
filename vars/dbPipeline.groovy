@@ -160,8 +160,8 @@ def call(String project, String artifactName) {
                             def result = sh(script: "ls -d ${migrationFolder}", returnStatus: true)
 
                             if (result == 0) {
-                                zip zipFile: "${ARTIFACT_INITIALIZATION}", archive: false, dir: "${migrationFolder}"
-                                archiveArtifacts artifacts: "${ARTIFACT_INITIALIZATION}", fingerprint: true
+                                zip zipFile: "${ARTIFACT_UPDATES}", archive: false, dir: "${migrationFolder}"
+                                archiveArtifacts artifacts: "${ARTIFACT_UPDATES}", fingerprint: true
                             } else if (result == 2) {
                                 echo "The directory '${migrationFolder}' is empty."
                             } else {
