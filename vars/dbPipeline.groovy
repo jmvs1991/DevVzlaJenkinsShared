@@ -145,6 +145,7 @@ def call(String project, String artifactName) {
                             sh 'dotnet clean'
                             sh 'cp $APP_SETTINGS_TEST .'
                             sh 'cp $APP_SETTINGS_STAGE .'
+                            sh 'cp $APP_SETTINGS_MAIN .'
                             sh 'cp $APP_SETTINGS_BABILON .'
                             sh ("dotnet run Enviroment:${ENVIRONMENT}")
                         }
