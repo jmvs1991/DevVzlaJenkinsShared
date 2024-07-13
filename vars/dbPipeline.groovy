@@ -10,6 +10,7 @@ def call(String project, String artifactName) {
             APP_SETTINGS_TEST = credentials('appsettings.Test.json')
             APP_SETTINGS_STAGE = credentials('appsettings.Stage.json')
             APP_SETTINGS_MAIN = credentials('appsettings.Main.json')
+            APP_SETTINGS_BABILON = credentials('appsettings.Babilon.json')
             ARTIFACT_INITIALIZATION = "${artifactName}_initialization_${env.BRANCH_NAME}_${BUILD_NUMBER}.zip"
             ARTIFACT_UPDATES = "${artifactName}_updates_${env.BRANCH_NAME}_${BUILD_NUMBER}.zip"
             INITIALIZATION_FOLDER = "${project}.SchemaInitialization"
@@ -29,6 +30,9 @@ def call(String project, String artifactName) {
                                 break
                             case 'main':
                                 env.ENVIRONMENT = "Main"
+                                break
+                            case 'babilon':
+                                env.ENVIRONMENT = "Babilon"
                                 break
                             default:
                                 error("Unknown branch: ${branchName}")
@@ -71,6 +75,7 @@ def call(String project, String artifactName) {
                         branch 'develop'
                         branch 'stage'
                         branch 'main'
+                        branch 'babilon'
                     }
                     expression {
                         return env.INITIALIZE == "true"
@@ -85,6 +90,7 @@ def call(String project, String artifactName) {
                             sh 'cp $APP_SETTINGS_TEST .'
                             sh 'cp $APP_SETTINGS_STAGE .'
                             sh 'cp $APP_SETTINGS_MAIN .'
+                            sh 'cp $APP_SETTINGS_BABILON .'
                             sh ("dotnet run Enviroment:${ENVIRONMENT}")
                         }
                     }
@@ -96,6 +102,7 @@ def call(String project, String artifactName) {
                         branch 'develop'
                         branch 'stage'
                         branch 'main'
+                        branch 'babilon'
                     }
                     expression {
                         return env.INITIALIZE == "true"
@@ -127,6 +134,7 @@ def call(String project, String artifactName) {
                         branch 'develop'
                         branch 'stage'
                         branch 'main'
+                        branch 'babilon'
                     }
                 }
                 steps {
@@ -137,7 +145,7 @@ def call(String project, String artifactName) {
                             sh 'dotnet clean'
                             sh 'cp $APP_SETTINGS_TEST .'
                             sh 'cp $APP_SETTINGS_STAGE .'
-                            sh 'cp $APP_SETTINGS_MAIN .'
+                            sh 'cp $APP_SETTINGS_BABILON .'
                             sh ("dotnet run Enviroment:${ENVIRONMENT}")
                         }
                     }
@@ -149,6 +157,7 @@ def call(String project, String artifactName) {
                         branch 'develop'
                         branch 'stage'
                         branch 'main'
+                        branch 'babilon'
                     }
                 }
                 steps {
