@@ -9,7 +9,7 @@ def call(String project, String artifactName, boolean withTest, String jenkinsfi
             AWS_DEFAULT_REGION = credentials('aws-default-region')
             PATH_TEST = "./${project}Test/${project}Test.csproj"
             PATH_PRJ = "./${project}/${project}.csproj"
-            PATH_PUB = "./${project}/bin/Release/net6.0/publish"
+            PATH_PUB = "${artifactName}_${env.BRANCH_NAME}"
             ARTIFACT = "${artifactName}_${env.BRANCH_NAME}_${BUILD_NUMBER}.zip"
         }
         stages {
@@ -89,7 +89,7 @@ def call(String project, String artifactName, boolean withTest, String jenkinsfi
                 }
                 steps {
                     echo 'Build..'
-                    sh "dotnet publish -c Release ${PATH_PRJ}"
+                    sh "dotnet publish -c Release ${PATH_PRJ} -o ${PATH_PUB}"
                     zip zipFile: "${ARTIFACT}", overwrite: true, archive: false, dir: "${PATH_PUB}"
                     archiveArtifacts artifacts: "${ARTIFACT}", fingerprint: true
                 }
