@@ -1,6 +1,9 @@
-def call(String project, String artifact, boolean forceSteps = false) {
+def call(String project, String artifact, boolean forceSteps = false, String dotnet = "net6") {
     pipeline {
         agent any
+        tools {
+            dotnetsdk "${dotnet}"
+        }
         environment {
             TELEGRAM_BOT_TOKEN = credentials('telegram_bot_token')
             TELEGRAM_CHANNEL = credentials('telegram_channel_id')
