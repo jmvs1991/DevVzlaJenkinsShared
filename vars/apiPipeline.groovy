@@ -2,7 +2,7 @@ def call(String project, String artifactName, boolean withTest, String jenkinsfi
     pipeline {
         agent any
         tools {
-            dotnet 'net6'  // The name you gave when configuring the tool
+            dotnetsdk 'net6'  // The name you gave when configuring the tool
         }
         environment {
             TELEGRAM_BOT_TOKEN = credentials('telegram_bot_token')
