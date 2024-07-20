@@ -1,4 +1,4 @@
-def call(String project, String artifactName, boolean withTest, String jenkinsfile, boolean forceSteps) {
+def call(String project, String artifactName, boolean withTest, String jenkinsfile, boolean forceSteps, String framework = "net6.0") {
     pipeline {
         agent any
         environment {
@@ -67,7 +67,7 @@ def call(String project, String artifactName, boolean withTest, String jenkinsfi
                 }
                 steps {
                     echo 'Testing..'
-                    sh "dotnet test ${PATH_TEST}"
+                    sh "dotnet test ${PATH_TEST} -f ${framework}"
                 }
             }
             stage('Build') {
