@@ -43,7 +43,7 @@ def call(String project, String folder, String jenkinsfile, boolean forceSteps =
                 }
                 steps {
                     echo 'Restore Project'
-                    sh 'dotnet clean'
+                    sh "dotnet ${PATH_PRJ} clean"
                     sh "dotnet restore ${PATH_PRJ} --no-cache"
                 }
             }
