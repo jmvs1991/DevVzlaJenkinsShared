@@ -1,6 +1,9 @@
-def call() {
+def call(String project, String jenkinsfile, String dotnet = "net6", boolean forceSteps = false) {
     pipeline {
         agent any
+        tools {
+            dotnetsdk "${dotnet}"
+        }
         environment {
             TELEGRAM_BOT_TOKEN = credentials('telegram_bot_token')
             TELEGRAM_CHANNEL = credentials('telegram_channel_id')
@@ -8,12 +11,17 @@ def call() {
             AWS_CODE_ARTIFACT_DOMAIN_OWNER = credentials('aws-code-artifact-domain-owner')
             AWS_DEFAULT_REGION = credentials('aws-default-region')
             AWS_SOURCE = credentials('aws-source')
+            PATH_PRJ = "./${project}/${project}.csproj"
         }
         stages {
             stage('Login') {
                 when {
                     anyOf {
-                        branch 'main'
+                        changeset "${project}/**/*"
+                        changeset "${jenkinsfile}"
+                        expression {
+                            forceSteps == true
+                        }
                     }
                 }
                 steps {
@@ -23,28 +31,39 @@ def call() {
             stage('Restore') {
                 when {
                     anyOf {
-                        branch 'main'
+                        changeset "${project}/**/*"
+                        changeset "${jenkinsfile}"
+                        expression {
+                            forceSteps == true
+                        }
                     }
                 }
                 steps {
                     echo 'Restore Project'
-                    sh 'dotnet clean'
-                    sh "dotnet restore . --no-cache"
+                    sh "dotnet clean ${PATH_PRJ}"
+                    sh "dotnet restore ${PATH_PRJ} --no-cache"
                 }
             }
             stage('Pack') {
                 when {
                     anyOf {
-                        branch 'main'
+                        changeset "${project}/**/*"
+                        changeset "${jenkinsfile}"
+                        expression {
+                            forceSteps == true
+                        }
                     }
                 }
                 steps {
                     echo 'Pack..'
-                    sh "dotnet pack -c Release . --output nupkgs"
+                    sh "dotnet pack -c Release ${PATH_PRJ} --output nupkgs"
                 }
             }
             stage('Publish') {
                 when {
+                    anyOf {
+                        changeset "${project}/**/*"
+                    }
                     anyOf {
                         branch 'main'
                     }
