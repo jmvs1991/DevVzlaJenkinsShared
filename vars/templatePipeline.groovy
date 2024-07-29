@@ -1,4 +1,4 @@
-def call(String project, String jenkinsfile, String dotnet = "net6") {
+def call(String project, String jenkinsfile, String dotnet = "net6", boolean forceSteps = false) {
     pipeline {
         agent any
         tools {
@@ -18,6 +18,9 @@ def call(String project, String jenkinsfile, String dotnet = "net6") {
                     anyOf {
                         changeset "${project}/**/*"
                         changeset "${jenkinsfile}"
+                        expression {
+                            forceSteps == true
+                        }
                     }
                 }
                 steps {
@@ -29,6 +32,9 @@ def call(String project, String jenkinsfile, String dotnet = "net6") {
                     anyOf {
                         changeset "${project}/**/*"
                         changeset "${jenkinsfile}"
+                        expression {
+                            forceSteps == true
+                        }
                     }
                 }
                 steps {
@@ -42,6 +48,9 @@ def call(String project, String jenkinsfile, String dotnet = "net6") {
                     anyOf {
                         changeset "${project}/**/*"
                         changeset "${jenkinsfile}"
+                        expression {
+                            forceSteps == true
+                        }
                     }
                 }
                 steps {
