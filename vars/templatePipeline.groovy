@@ -1,6 +1,9 @@
-def call() {
+def call(String project, String artifactName, String dotnet = "net6") {
     pipeline {
         agent any
+        tools {
+            dotnetsdk "${dotnet}"
+        }
         environment {
             TELEGRAM_BOT_TOKEN = credentials('telegram_bot_token')
             TELEGRAM_CHANNEL = credentials('telegram_channel_id')
@@ -13,7 +16,8 @@ def call() {
             stage('Login') {
                 when {
                     anyOf {
-                        branch 'main'
+                        changeset "${project}/**/*"
+                        changeset "${jenkinsfile}"
                     }
                 }
                 steps {
@@ -23,28 +27,33 @@ def call() {
             stage('Restore') {
                 when {
                     anyOf {
-                        branch 'main'
+                        changeset "${project}/**/*"
+                        changeset "${jenkinsfile}"
                     }
                 }
                 steps {
                     echo 'Restore Project'
-                    sh 'dotnet clean'
-                    sh "dotnet restore . --no-cache"
+                    sh "dotnet clean ${PATH_PRJ}"
+                    sh "dotnet restore ${PATH_PRJ} --no-cache"
                 }
             }
             stage('Pack') {
                 when {
                     anyOf {
-                        branch 'main'
+                        changeset "${project}/**/*"
+                        changeset "${jenkinsfile}"
                     }
                 }
                 steps {
                     echo 'Pack..'
-                    sh "dotnet pack -c Release . --output nupkgs"
+                    sh "dotnet pack -c Release ${PATH_PRJ} --output nupkgs"
                 }
             }
             stage('Publish') {
                 when {
+                    anyOf {
+                        changeset "${project}/**/*"
+                    }
                     anyOf {
                         branch 'main'
                     }
