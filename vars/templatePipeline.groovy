@@ -11,6 +11,7 @@ def call(String project, String jenkinsfile, String dotnet = "net6", boolean for
             AWS_CODE_ARTIFACT_DOMAIN_OWNER = credentials('aws-code-artifact-domain-owner')
             AWS_DEFAULT_REGION = credentials('aws-default-region')
             AWS_SOURCE = credentials('aws-source')
+            PATH_PRJ = "./${project}/${project}.csproj"
         }
         stages {
             stage('Login') {
