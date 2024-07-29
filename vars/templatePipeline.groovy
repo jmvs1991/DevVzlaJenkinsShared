@@ -1,4 +1,4 @@
-def call(String project, String jenkinsfile, String dotnet = "net6", boolean forceSteps = false) {
+def call(String project, String jenkinsfile, String dotnet = "net6", boolean forceSteps = false, boolean publish = false) {
     pipeline {
         agent any
         tools {
@@ -63,6 +63,9 @@ def call(String project, String jenkinsfile, String dotnet = "net6", boolean for
                 when {
                     anyOf {
                         changeset "${project}/**/*"
+                        expression {
+                            forceSteps == true && publish == true
+                        }
                     }
                     anyOf {
                         branch 'main'
