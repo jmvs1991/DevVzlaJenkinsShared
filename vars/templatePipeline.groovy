@@ -1,4 +1,4 @@
-def call(String project, String artifactName, String dotnet = "net6") {
+def call(String project, String jenkinsfile, String dotnet = "net6") {
     pipeline {
         agent any
         tools {
