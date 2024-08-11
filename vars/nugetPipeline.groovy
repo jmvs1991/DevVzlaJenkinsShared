@@ -12,7 +12,8 @@ def call(String project, String folder, String jenkinsfile, boolean forceSteps =
             AWS_DEFAULT_REGION = credentials('aws-default-region')
             AWS_SOURCE = credentials('aws-source')
             PATH_PRJ = "./${folder}/${project}.csproj"
-            PATH_PKG = "./${folder}/bin/Release/*.nupkg"
+            PATH_PUB = "${folder}_${env.BRANCH_NAME}"
+            PATH_PKG = "./${PATH_PUB}/*.nupkg"
         }
         stages {
             stage('Login') {
@@ -60,7 +61,7 @@ def call(String project, String folder, String jenkinsfile, boolean forceSteps =
                 }
                 steps {
                     echo 'Build..'
-                    sh "dotnet build -c Release ${PATH_PRJ}"
+                    sh "dotnet build -c Release ${PATH_PRJ} -o ${PATH_PUB}"
                 }
             }
             stage('Publish') {
