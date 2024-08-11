@@ -12,7 +12,7 @@ def call(String project, String folder, String jenkinsfile, boolean forceSteps =
             AWS_DEFAULT_REGION = credentials('aws-default-region')
             AWS_SOURCE = credentials('aws-source')
             PATH_PRJ = "./${folder}/${project}.csproj"
-            PATH_PUB = "${artifactName}_${env.BRANCH_NAME}"
+            PATH_PUB = "${folder}_${env.BRANCH_NAME}"
             PATH_PKG = "./${PATH_PUB}/*.nupkg"
         }
         stages {
