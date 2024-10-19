@@ -14,6 +14,7 @@ def call(String project, String artifactName, String dotnet = "net8") {
             APP_SETTINGS_STAGE = credentials('appsettings.Stage.json')
             APP_SETTINGS_MAIN = credentials('appsettings.Main.json')
             APP_SETTINGS_BABILON = credentials('appsettings.Babilon.json')
+            APP_SETTINGS_PASSE = credentials('appsettings.Passe.json')
             ARTIFACT_INITIALIZATION = "${artifactName}_initialization_${env.BRANCH_NAME}_${BUILD_NUMBER}.zip"
             ARTIFACT_UPDATES = "${artifactName}_updates_${env.BRANCH_NAME}_${BUILD_NUMBER}.zip"
             INITIALIZATION_FOLDER = "${project}.SchemaInitialization"
@@ -36,6 +37,9 @@ def call(String project, String artifactName, String dotnet = "net8") {
                                 break
                             case 'babilon':
                                 env.ENVIRONMENT = "Babilon"
+                                break
+                            case 'passe':
+                                env.ENVIRONMENT = "Passe"
                                 break
                             default:
                                 error("Unknown branch: ${branchName}")
