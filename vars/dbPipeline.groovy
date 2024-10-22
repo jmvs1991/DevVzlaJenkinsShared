@@ -83,6 +83,7 @@ def call(String project, String artifactName, String dotnet = "net8") {
                         branch 'stage'
                         branch 'main'
                         branch 'babilon'
+                        branch 'passe'
                     }
                     expression {
                         return env.INITIALIZE == "true"
@@ -98,6 +99,7 @@ def call(String project, String artifactName, String dotnet = "net8") {
                             sh 'cp $APP_SETTINGS_STAGE .'
                             sh 'cp $APP_SETTINGS_MAIN .'
                             sh 'cp $APP_SETTINGS_BABILON .'
+                            sh 'cp $APP_SETTINGS_PASSE .'
                             sh ("dotnet run Enviroment:${ENVIRONMENT}")
                         }
                     }
@@ -110,6 +112,7 @@ def call(String project, String artifactName, String dotnet = "net8") {
                         branch 'stage'
                         branch 'main'
                         branch 'babilon'
+                        branch 'passe'
                     }
                     expression {
                         return env.INITIALIZE == "true"
@@ -142,6 +145,7 @@ def call(String project, String artifactName, String dotnet = "net8") {
                         branch 'stage'
                         branch 'main'
                         branch 'babilon'
+                        branch 'passe'
                     }
                 }
                 steps {
@@ -154,6 +158,7 @@ def call(String project, String artifactName, String dotnet = "net8") {
                             sh 'cp $APP_SETTINGS_STAGE .'
                             sh 'cp $APP_SETTINGS_MAIN .'
                             sh 'cp $APP_SETTINGS_BABILON .'
+                            sh 'cp $APP_SETTINGS_PASSE .'
                             sh ("dotnet run Enviroment:${ENVIRONMENT}")
                         }
                     }
@@ -166,6 +171,7 @@ def call(String project, String artifactName, String dotnet = "net8") {
                         branch 'stage'
                         branch 'main'
                         branch 'babilon'
+                        branch 'passe'
                     }
                 }
                 steps {
