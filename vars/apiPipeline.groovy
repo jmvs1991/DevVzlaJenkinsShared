@@ -1,4 +1,4 @@
-def call(String project, String artifactName, boolean withTest, String jenkinsfile, boolean forceSteps, String dotnet = "net6") {
+def call(String project, String artifactName, boolean withTest, String jenkinsfile, boolean forceSteps, String dotnet = "net6", String solutionName = "") {
     pipeline {
         agent any
         tools {
@@ -47,8 +47,14 @@ def call(String project, String artifactName, boolean withTest, String jenkinsfi
                     }
                 }
                 steps {
-                    echo 'Restore Project'
-                    sh 'dotnet clean'
+                    script {
+                        def cleanCommand = "dotnet clean"
+                        if (solutionName?.trim()) {
+                            cleanCommand += " ${solutionName}"
+                        }
+                        echo 'Restore Project'
+                        sh cleanCommand
+                    }
                     sh "dotnet restore ${PATH_PRJ} --no-cache"
                 }
             }
