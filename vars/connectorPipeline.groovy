@@ -1,4 +1,4 @@
-def call(String project, String artifact, String dotnet = "net6") {
+def call(String project, String artifact, String dotnet = "net6", String solutionName = "") {
     pipeline {
         agent any
         tools {
@@ -22,8 +22,14 @@ def call(String project, String artifact, String dotnet = "net6") {
             }
             stage('Restore') {
                 steps {
-                    echo 'Restore Project'
-                    sh 'dotnet clean'
+                    script {
+                        def cleanCommand = "dotnet clean"
+                        if (solutionName?.trim()) {
+                            cleanCommand += " ${solutionName}"
+                        }
+                        echo 'Restore Project'
+                        sh cleanCommand
+                    }
                     sh 'dotnet restore --no-cache'
                 }
             }
