@@ -30,7 +30,7 @@ def call(String project, String artifact, String dotnet = "net6", String solutio
                         echo 'Restore Project'
                         sh cleanCommand
                     }
-                    sh 'dotnet restore --no-cache'
+                    sh "dotnet restore ${PATH_PRJ} --no-cache"
                 }
             }
             stage('Build') {
