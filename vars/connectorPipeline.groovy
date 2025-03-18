@@ -11,7 +11,7 @@ def call(String project, String artifact, String dotnet = "net6", String solutio
             AWS_CODE_ARTIFACT_DOMAIN_OWNER = credentials('aws-code-artifact-domain-owner')
             AWS_DEFAULT_REGION = credentials('aws-default-region')
             PATH_PRJ = "./${project}/${project}.csproj"
-            PATH_PUB = "./${project}/bin/Release/net6.0/publish"
+            PATH_PUB = "${artifact}_${env.BRANCH_NAME}"
             ARTIFACT = "${artifact}_${env.BRANCH_NAME}_${BUILD_NUMBER}.zip"
         }
         stages {
@@ -43,7 +43,7 @@ def call(String project, String artifact, String dotnet = "net6", String solutio
                 }
                 steps {
                     echo 'Build..'
-                    sh "dotnet publish -c Release ${PATH_PRJ}"
+                    sh "dotnet publish -c Release ${PATH_PRJ} -o ${PATH_PUB}"
                     zip zipFile: "${ARTIFACT}", overwrite: true, archive: false, dir: "${PATH_PUB}"
                     archiveArtifacts artifacts: "${ARTIFACT}", fingerprint: true
                 }
