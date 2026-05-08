@@ -1,4 +1,4 @@
-def call(String project, String artifactName, boolean withTest, String jenkinsfile, boolean forceSteps, String dotnet = "net6", String solutionName = "") {
+def call(String project, String artifactName, boolean withTest, String jenkinsfile, boolean forceSteps, String dotnet = "net6", String solutionName = "", boolean supportsLayerSplitTests = false) {
     pipeline {
         agent any
         tools {
@@ -58,6 +58,54 @@ def call(String project, String artifactName, boolean withTest, String jenkinsfi
                     sh "dotnet restore ${PATH_PRJ} --no-cache"
                 }
             }
+            stage('Test Controllers') {
+                when {
+                    anyOf {
+                        changeset "${project}/**/*"
+                        changeset "${project}Cache/**/*"
+                        changeset "${project}Services/**/*"
+                        changeset "${project}Test/**/*"
+                        changeset "${jenkinsfile}"
+                        expression {
+                            forceSteps == true
+                        }
+                    }
+                    expression {
+                        withTest == true
+                    }
+                    expression {
+                        supportsLayerSplitTests == true
+                    }
+                }
+                steps {
+                    echo 'Testing controllers layer..'
+                    sh "dotnet test ${PATH_TEST} --filter Layer=Controllers"
+                }
+            }
+            stage('Test Services') {
+                when {
+                    anyOf {
+                        changeset "${project}/**/*"
+                        changeset "${project}Cache/**/*"
+                        changeset "${project}Services/**/*"
+                        changeset "${project}Test/**/*"
+                        changeset "${jenkinsfile}"
+                        expression {
+                            forceSteps == true
+                        }
+                    }
+                    expression {
+                        withTest == true
+                    }
+                    expression {
+                        supportsLayerSplitTests == true
+                    }
+                }
+                steps {
+                    echo 'Testing services layer..'
+                    sh "dotnet test ${PATH_TEST} --filter Layer=Serives"
+                }
+            }
             stage('Test') {
                 when {
                     anyOf {
@@ -73,9 +121,12 @@ def call(String project, String artifactName, boolean withTest, String jenkinsfi
                     expression {
                         withTest == true
                     }
+                    expression {
+                        supportsLayerSplitTests == false
+                    }
                 }
                 steps {
-                    echo 'Testing..'
+                    echo 'Testing full suite..'
                     sh "dotnet test ${PATH_TEST}"
                 }
             }
